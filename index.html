@@ -1,0 +1,1101 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light only">
+<title>קביעת כמות שנאים חברת חשמל – משרד טיקטין</title>
+<script data-goatcounter="https://tiktin-apps.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --red:#c8202f; --orange:#f07a24; --ink:#1f2328; --muted:#5f6670; --line:#d5d9de;
+  --bg:#f4f5f7; --card:#ffffff; --ok:#1d7a3a; --bad:#c8202f; --c95:#1f5fbf; --c240:#8a3ab9;
+  --h:40px;
+  color-scheme: light;
+}
+*{box-sizing:border-box}
+html,body{margin:0;overflow-x:hidden;background:var(--bg);color:var(--ink);font-family:"Segoe UI",Arial,"Noto Sans Hebrew",sans-serif;font-size:15px}
+header{background:#fff;border-bottom:3px solid var(--red);display:flex;align-items:center;gap:16px;padding:10px 16px;position:sticky;top:0;z-index:20}
+header img{height:52px}
+header h1{font-size:20px;margin:0;flex:1}
+header .ver{color:var(--muted);font-size:13px;white-space:nowrap}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px 16px;justify-content:space-between;padding:10px 16px;background:#fff;border-bottom:1px solid var(--line)}
+.btn{height:var(--h);padding:0 14px;border:1px solid var(--line);background:#fff;border-radius:8px;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+.btn:hover{border-color:var(--red)}
+.tgrp{display:flex;flex-wrap:wrap;gap:8px}
+.ibtn{width:40px;justify-content:center;padding:0;color:var(--red);font-size:17px}
+.imphelp{background:#fff;border-bottom:1px solid var(--line);padding:12px 16px;font-size:13.5px;line-height:1.6}
+.ihgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:6px}
+@media (max-width:1000px){.ihgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.ihgrid{grid-template-columns:1fr}}
+.imphelp ul{margin:4px 0 0;padding-inline-start:18px}
+.btn.primary{background:var(--red);border-color:var(--red);color:#fff}
+.btn.small{height:32px;padding:0 10px;font-size:13px}
+main{padding:14px 16px;display:grid;grid-template-columns:minmax(380px,520px) 1fr;gap:14px;align-items:start}
+@media (max-width:1000px){main{grid-template-columns:1fr}}
+main>section,.alts>*,.two>*{min-width:0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;margin-bottom:14px}
+.card h2{font-size:16px;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.card h2 .num{background:var(--red);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-flex;align-items:center;justify-content:center;font-size:14px;flex:none}
+.ro{height:var(--h);border:1px solid var(--line);border-radius:7px;background:#fff;display:flex;align-items:center;padding:0 10px;color:var(--ink);font-weight:600}
+.ro.hl{border-color:var(--red);color:var(--red)}
+.card h3{font-size:14px;margin:12px 0 8px}
+.grid{display:grid;gap:10px;align-items:end}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:560px){.g3,.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12.5px;color:var(--muted);min-width:0}
+label.f > span.lbl{min-height:2.6em;display:flex;align-items:flex-end;line-height:1.3}
+.fld{position:relative;display:block}
+.fld input,.fld select{width:100%;height:var(--h);border:1px solid #b9c0c8;border-radius:7px;background-color:#fff;color:var(--ink);font:inherit;padding:0 10px 0 30px;appearance:none;-webkit-appearance:none}
+.fld select{background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23777'/%3E%3C/svg%3E") no-repeat 30px 50%;padding-left:46px}
+.fld input:focus,.fld select:focus{outline:2px solid #f3b38a;border-color:var(--orange)}
+.fld .x{position:absolute;left:6px;top:50%;transform:translateY(-50%);width:20px;height:20px;border:0;border-radius:50%;background:#e9ecef;color:#555;font-size:13px;line-height:20px;text-align:center;cursor:pointer;padding:0}
+.fld select + .x{left:4px}
+.fld .x:hover{background:var(--red);color:#fff}
+details.help{margin-top:6px}
+details.help summary{cursor:pointer;color:var(--red);font-size:13px;list-style:none;display:inline-flex;align-items:center;gap:4px}
+details.help summary::before{content:"ⓘ";font-size:14px}
+details.help div{font-size:13px;color:var(--muted);line-height:1.6;background:#fafafa;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:6px}
+.group{border:1px solid var(--line);border-radius:10px;padding:10px;margin-bottom:10px;background:#fcfcfd}
+.group .ghead{display:flex;align-items:center;gap:8px;margin-bottom:8px;font-weight:600}
+.group .ghead .st{font-weight:400;font-size:12.5px}
+.trow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) 36px;gap:8px;align-items:end;margin-bottom:6px}
+@media (max-width:560px){.trow{grid-template-columns:repeat(2,minmax(0,1fr))}.trow .del{justify-self:start}}
+.del{height:var(--h);width:36px;border:1px solid var(--line);background:#fff;border-radius:7px;cursor:pointer;color:var(--muted);font-size:16px}
+.del:hover{color:#fff;background:var(--red);border-color:var(--red)}
+.ok{color:var(--ok)} .bad{color:var(--bad);font-weight:600}
+.alts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:1300px){.alts{grid-template-columns:1fr}}
+.alt h2 .tag{color:#fff;border-radius:6px;padding:2px 8px;font-size:13px}
+.alt.a95 h2 .tag{background:var(--c95)} .alt.a240 h2 .tag{background:var(--c240)}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-bottom:10px}
+@media (max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{border:1px solid var(--line);border-radius:8px;padding:8px;text-align:center;background:#fff}
+.kpi b{display:block;font-size:22px}
+.kpi small{color:var(--muted);font-size:12px}
+.kpi.main{border-color:var(--red);background:#fff6f2}
+.kpi.main b{color:var(--red);font-size:26px}
+.status{padding:8px 10px;border-radius:8px;margin-bottom:10px;font-size:13.5px}
+.status.okb{background:#eaf6ee;color:var(--ok)} .status.badb{background:#fdecee;color:var(--bad)}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th,td{border:1px solid var(--line);padding:5px 6px;text-align:center}
+th{background:#f1f3f5;font-weight:600}
+.tblwrap{overflow:auto;max-height:520px;border-radius:8px}
+.tblwrap thead th{position:sticky;top:0}
+.svgbox{border:1px solid var(--line);border-radius:8px;background:#fff;overflow:auto;margin-bottom:10px}
+.svgbox.elev{max-height:620px}
+.svgbox svg{display:block;margin:auto}
+.two{display:grid;grid-template-columns:1fr;gap:4px}
+.svgbox.plan svg{width:100%;max-width:640px;height:auto}
+.chk{display:flex;align-items:center;gap:8px;height:var(--h);font-size:13.5px;color:var(--ink)}
+.chk input{width:18px;height:18px}
+.muted{color:var(--muted);font-size:12.5px}
+.tabs{display:flex;flex-wrap:wrap;gap:6px;padding:10px 16px 0;background:var(--bg)}
+.tab{height:38px;padding:0 14px;border:1px solid var(--line);border-bottom:3px solid transparent;background:#fff;border-radius:8px 8px 0 0;font:inherit;cursor:pointer;display:inline-flex;align-items:center;gap:8px;color:var(--ink)}
+.tab.on{border-bottom-color:var(--red);font-weight:700;color:var(--red)}
+.tab .tx{border:0;background:#eee;border-radius:50%;width:18px;height:18px;font-size:11px;line-height:18px;padding:0;cursor:pointer;color:#555}
+.tab .tx:hover{background:var(--red);color:#fff}
+.tab.add{color:var(--muted)}
+.dlg{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:50;padding:16px}
+.dbox{background:#fff;border-radius:12px;padding:18px;max-width:900px;width:100%;max-height:90vh;overflow:auto}
+.dbox h2{margin:0 0 10px;font-size:18px}
+.rp td,.rp th{border:none;padding:0;text-align:right}
+footer{color:var(--muted);font-size:12px;text-align:center;padding:10px 0 20px}
+@media print{header,.toolbar{position:static}.toolbar,.x,.del,.btn{display:none !important}}
+.crow{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr) 36px;gap:8px;align-items:end;margin-bottom:6px}
+.prow{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1.4fr) minmax(0,1fr) 36px;gap:8px;align-items:end;margin-bottom:6px}
+@media (max-width:560px){.prow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi b{font-size:20px}
+</style>
+</head>
+<body>
+<header>
+  <img src="data:image/png;base64,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" alt="טיקטין תכנון חשמל">
+  <h1>קביעת כמות שנאים חברת חשמל</h1>
+  <span class="ver" id="ver"></span>
+</header>
+<div class="toolbar">
+  <div class="tgrp">
+    <button class="btn primary" id="bImport" title="קליטת תמהיל דירות מקובץ PDF, Word, Excel או מצגת">📥 קליטה מקובץ</button>
+    <input type="file" id="fImport" accept=".pdf,.docx,.xlsx,.xlsm,.xls,.csv,.pptx" hidden>
+    <button class="btn ibtn" id="bImpHelp" title="אילו קבצים אפשר לקלוט ואיך להכין אותם">ⓘ</button>
+    <button class="btn" id="bReset" title="איפוס כל השדות">↺ איפוס טופס</button>
+  </div>
+  <div class="tgrp">
+    <button class="btn" id="bSave" title="שמירת הנתונים לקובץ במחשב">💾 שמירת טופס</button>
+    <button class="btn" id="bLoad" title="טעינת קובץ נתונים שנשמר קודם">📂 טעינת טופס</button>
+    <input type="file" id="fLoad" accept=".json" hidden>
+  </div>
+  <div class="tgrp">
+    <button class="btn" id="bXlsx" title="ייצוא החישוב לקובץ אקסל">ייצוא Excel</button>
+    <button class="btn" id="bDoc" title="ייצוא החישוב לקובץ וורד">ייצוא Word</button>
+    <button class="btn" id="bPdf" title="ייצוא החישוב לקובץ PDF">ייצוא PDF</button>
+  </div>
+</div>
+<div class="imphelp" id="impHelp" hidden>
+  <b>קליטת תמהיל דירות מקובץ – אילו קבצים עובדים</b>
+  <div class="ihgrid">
+    <div><b class="ok">✔ עובד היטב</b><ul>
+      <li><b>Excel</b> ‏(xlsx, xls, csv) – הכי אמין.</li>
+      <li><b>Word</b> ‏(docx) עם טבלה אמיתית.</li>
+      <li><b>PowerPoint</b> ‏(pptx) עם טבלה אמיתית בשקף.</li>
+      <li><b>PDF</b> שיוצא מתוכנה (אקסל / וורד / אוטוקד) – טקסט שאפשר לסמן ולהעתיק.</li>
+    </ul></div>
+    <div><b class="bad">✘ לא ייקלט</b><ul>
+      <li>PDF סרוק או צילום / תמונה של טבלה.</li>
+      <li>Word / PowerPoint בפורמט ישן (doc, ppt) – לשמור מחדש כ־docx / pptx.</li>
+      <li>טבלה שמצוירת כקווים וטקסט חופשי ולא כטבלה, או טבלה בתוך תמונה.</li>
+      <li>קבצי DWG / תוכניות.</li>
+    </ul></div>
+    <div><b>מבנה טבלה שמזוהה</b><ul>
+      <li><b>לפי קומות:</b> עמודת "קומה" ועמודה לכל סוג דירה ("3 חד׳", "4 חדרים", "פנטהאוז") עם מספר הדירות בקומה.</li>
+      <li><b>רשימה:</b> עמודות "קומה" ו"חדרים", ואם יש – "בניין", "שטח", "כמות".</li>
+      <li>קומות: מספר, טווח ("2-10") או "קרקע".</li>
+      <li>בניין: כותרת מעל הטבלה ("בניין A") או עמודת "בניין". כמה בניינים בקובץ אחד – נפתחת לשונית לכל בניין שנבחר.</li>
+    </ul></div>
+    <div><b>דגשים</b><ul>
+      <li>כמות בטווח קומות: עדיף לכתוב בכותרת "לקומה" או "סה״כ" – אחרת הטופס מנחש.</li>
+      <li>שורות "סה״כ" מדולגות אוטומטית.</li>
+      <li>לפני הקליטה מוצג פירוט לכל בניין – כדאי לעבור עליו.</li>
+      <li>גודל החיבור נקבע לפי כללי ברירת המחדל וניתן לשינוי אחרי הקליטה.</li>
+    </ul></div>
+  </div>
+</div>
+
+<div class="tabs" id="tabs"></div>
+<main>
+<section id="inputs">
+  <div class="card">
+    <h2><span class="num">1</span>פרטי פרויקט</h2>
+    <div class="grid g2">
+      <label class="f"><span class="lbl">שם פרויקט</span><span class="fld"><input id="project" type="text" title="שם הפרויקט – יופיע בייצוא"></span></label>
+      <label class="f"><span class="lbl">בניין</span><span class="fld"><input id="building" type="text" title="שם / מספר הבניין"></span></label>
+    </div>
+    <div class="grid g2" style="margin-top:10px">
+      <label class="f"><span class="lbl">מספר קומות מעל קומת קרקע</span><span class="fld"><input id="floors" type="text" inputmode="numeric" data-def="20" title="הקומה העליונה. קומת קרקע = 0"></span></label>
+      <label class="f"><span class="lbl">אזור בקעת הירדן והערבה</span><span class="fld"><select id="jordan" data-def="no" title="משנה את טבלת מקדמי ההתלכדות לפי מחשבון חח״י"><option value="no">לא</option><option value="yes">כן</option></select></span></label>
+    </div>
+    <div class="grid g2" style="margin-top:10px">
+      <label class="f"><span class="lbl">סה״כ יח״ד בבניין</span><span class="ro hl" id="unitsTotal" title="מחושב אוטומטית ממקבצי הקומות">0</span></label>
+      <label class="f"><span class="lbl">Σ שיא ביקוש דירתי [kVA]</span><span class="ro" id="kvaTotal" title="סכום שיא הביקוש הלא מתלכד של כל הדירות">0</span></label>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span>מקבצי קומות ודירות</h2>
+    <details class="help"><summary>הסבר</summary><div>
+      כל מקבץ הוא טווח קומות זהות (מקומה עד קומה, קרקע = 0). בתוך מקבץ מגדירים סוגי דירות: כמות בקומה, מס׳ חדרים, שטח (לא חובה) וגודל חיבור.<br>
+      גודל חיבור ברירת מחדל: 2–4 חדרים – 3X25A תמיד (בלי קשר לשטח). 5 חדרים – 3X25A, ומשטח 120 מ״ר ומעלה – 3X40A. 6 חדרים ומעלה – 3X40A אוטומטית. אפשר לשנות ידנית.<br>
+      לשינוי בקומה בודדת – מגדירים מקבץ של קומה אחת. אסור שמקבצים יחפפו.
+    </div></details>
+    <div id="groups" style="margin-top:10px"></div>
+    <button class="btn small" id="addGroup" title="הוספת מקבץ קומות חדש">＋ הוספת מקבץ</button>
+    <div class="muted" id="totals" style="margin-top:8px"></div>
+    <div class="muted" id="starNote" style="margin-top:8px;display:none"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">3</span>ציבורי ומסחר בבניין</h2>
+    <details class="help"><summary>הסבר</summary><div>
+      חיבור ציבורי ברירת מחדל לפי מספר הקומות: עד 8 קומות – 3X63A, עד 12 קומות – 3X200A, מעל – 3X400A. אפשר לשנות או למחוק.<br>
+      חיבור ציבורי נכנס לחישוב הביתי לפי כלל חח״י: אם הוא גדול מ־30% מהזרם הכולל – מוסיפים 50% ממנו.<br>
+      מסחר / משרדים מחושבים כצרכנות לא ביתית, והבניין מחושב כצרכנות מעורבת (הגבוה מבין שיא חורף ושיא קיץ).
+    </div></details>
+    <div id="connBox" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">4</span>מרתף חניה</h2>
+    <details class="help"><summary>הסבר</summary><div>
+      חיבורי החניון (ציבורי חניון, טעינת רכבים ועוד) נכנסים לשנאים של הבניין שנבחר, ומחושבים כחיבור ציבורי/חניון לפי מחשבון חח״י.<br>
+      בבניין עם כמה שנאים – החניון נכנס אחרון, ולכן בדרך כלל יושב בשנאי האחרון יחד עם הציבורי.
+    </div></details>
+    <div id="parkBox" style="margin-top:6px"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">5</span>הגדרות שנאים</h2>
+    <details class="help"><summary>הסבר</summary><div>
+      חח״י עובדת רק עם שנאי 630 ו־1000 קו״א. התחנה בתוך הבניין – תמיד שנאי יבש. ההעמסה המותרת לכל גודל שנאי ניתנת לקביעה באחוזים או בקו״א (ברירת מחדל 100%).<br>
+      לכל בניין: אם העומס נכנס ב־630 – שנאי 630. אם לא, ושנאי 1000 בשימוש – שנאי 1000 עד אחוז ההעמסה שנבחר. מעבר לזה – 2 שנאי 630 (ויותר אם צריך).<br>
+      בבניין עם כמה שנאים ממלאים לפי הסדר: דירות מלמטה למעלה בקומות שלמות, אחר כך ציבורי בניין, מסחר ומרתף החניה. כל שנאי מחושב בנפרד לפי המחשבון.<br>
+      חדר שנאים מכיל 1 עד 3 שנאים – מעבר לכך נפתח חדר נוסף.
+    </div></details>
+    <div id="txBox" style="margin-top:6px"></div>
+  </div>
+</section>
+
+<section id="results">
+  <div class="card" id="resB"></div>
+  <div class="card" id="resP"></div>
+  <div class="card">
+    <h2><span class="num">8</span>פירוט חישוב לפי מחשבון חח״י</h2>
+    <div class="tblwrap"><table id="detTbl"></table></div>
+    <details class="help"><summary>שיטת החישוב</summary><div>
+      <b>ביתי:</b> הספק = מקדם התלכדות (לפי מספר הדירות) × Σ שיא ביקוש דירתי ÷ 0.95, כפול מקדם גידול 1.01⁵ = 1.051 (1% בשנה, 5 שנים – קבוע לפי חח״י).<br>
+      <b>ציבורי / חניון:</b> אם סך זרם החיבורים גדול מ־30% מהזרם הסופי – מוסיפים 50% מההספק שלהם.<br>
+      <b>לא ביתי:</b> Σ (כמות × מקדם ניצול × זרם החיבור) × מקדם התלכדות לא ביתי (1 עד 0.8). שנאי שלא מזין דירות (ציבורי בניין וציבורי חניון) מחושב כברירת מחדל כצרכנות ביתית – 50% מהספק החיבורים, וניתן להחליף ללא ביתית בטבלת השנאים.<br>
+      <b>מעורב:</b> שיא חורף = ביתי + 0.5 × לא ביתי; שיא קיץ = 0.7 × ביתי + לא ביתי; נבחר הגבוה.<br>
+      מקור: מחשבון העומסים של חח״י, נוהל הרשת הארצית 733-006-004-010. החישוב נבדק מול קובץ האקסל של חח״י.
+    </div></details>
+  </div>
+</section>
+</main>
+
+<div id="impDlg" class="dlg"><div class="dbox"><h2>קליטת בניינים מהקובץ</h2><div class="dbody"></div>
+  <div style="display:flex;gap:8px;margin-top:12px"><button class="btn primary" id="impOk">קליטה לטופס</button><button class="btn" id="impCancel">ביטול</button></div></div></div>
+<footer>טיקטין תכנון חשמל · <span id="ver2"></span></footer>
+
+<script>
+const VERSION = 'V1';
+document.getElementById('ver').textContent = 'גרסה ' + VERSION;
+document.getElementById('ver2').textContent = 'גרסה ' + VERSION;
+
+/* ---------- IEC tables (מחשבון עומסים חח"י) ---------- */
+const ROOMS = ['2-3','4','5','6','7'];
+const ROOM_LBL = {'2-3':'2–3','4':'4','5':'5','6':'6','7':'7 ומעלה'};
+const CONNS = ['1x40','3x25','3x40','3x63','3x80','3x100','3x125','3x160','3x200'];
+const CONN_LBL = c => c.toUpperCase().replace('X','X') + 'A';
+const DEMAND = { // שיא ביקוש לא מתלכד דירתי [kVA]
+  '2-3':{'1x40':5},
+  '4':{'1x40':6,'3x25':8},
+  '5':{'1x40':7,'3x25':9,'3x40':11},
+  '6':{'3x25':10,'3x40':12.5,'3x63':14.5,'3x80':18},
+  '7':{'3x25':11,'3x40':13.5,'3x63':15,'3x80':19,'3x100':21,'3x125':23,'3x160':25,'3x200':27}
+};
+const COINC_BASE = [[1,1],[2,.95],[3,.9],[4,.87],[5,.81],[6,.75],[7,.72],[8,.7],[9,.68],[10,.65],[11,.64],[12,.63],[13,.62],[14,.61],[15,.6],[18,.59],[20,.58],[25,.57],[30,.56],[35,.55],[40,.54],[45,.53],[50,.52],[60,.51],[70,.5]];
+function coinc(n, jordan){
+  if(n<=0) return 0;
+  let k=1;
+  for(const [m,v] of COINC_BASE){ if(n>=m) k=v; }
+  if(jordan && n>=60) k=.52;
+  return k;
+}
+function demand(rooms, conn){
+  if(!rooms||!conn) return {p:0, subst:false};
+  // returns {p, subst}
+  let i = ROOMS.indexOf(rooms); if(i<0) i=2;
+  for(let j=i;j<ROOMS.length;j++){ const v=DEMAND[ROOMS[j]][conn]; if(v!=null) return {p:v, subst:j!==i, src:ROOMS[j]}; }
+  for(let j=i-1;j>=0;j--){ const v=DEMAND[ROOMS[j]][conn]; if(v!=null) return {p:v, subst:true, src:ROOMS[j]}; }
+  return {p:0, subst:true};
+}
+function substItems(){
+  const out=[]; S.groups.forEach((g,gi)=>g.types.forEach(t=>{ const c=Math.round(num(t.count)); if(!(c>0)||!t.rooms||!t.conn) return; const d=demand(t.rooms,t.conn); if(!d.subst) return;
+    out.push(`✱ ${ROOM_LBL[t.rooms]} חד׳ עם חיבור ${CONN_LBL(t.conn)} – מקבץ ${gi+1}, קומות ${g.from}–${g.to}, ${c} דירות בקומה: צירוף שאינו קיים בטבלת חח״י, ולכן שיא הביקוש חושב לפי ${ROOM_LBL[d.src]} חד׳ ${CONN_LBL(t.conn)} = ${fmt(d.p)} kVA לדירה.`); }));
+  return out;
+}
+function defaultConn(rooms, area){
+  if(!rooms) return '';
+  if(rooms==='2-3'||rooms==='4') return '3x25';
+  if(rooms==='5') return parseFloat(area)>=120 ? '3x40' : '3x25';
+  return '3x40';
+}
+
+/* ---------- state ---------- */
+const PUB_CONNS=['3x25','3x40','3x63','3x80','3x100','3x125','3x160','3x200','3x250','3x315','3x400','3x500','3x630','3x800','3x910'];
+const COM_CONNS=['1x40',...PUB_CONNS];
+const DEF_TX={type:'dry',allow1000:'yes',max630:100,max1000:100};
+function defPark(){ return {bld:0, rows:[{name:'ציבורי חניון',conn:'',count:1},{name:'טעינת רכבים',conn:'',count:1}]}; }
+function defPub(floors){ const s=String(floors??'').trim(); if(s==='') return ''; const n=num(s,0); return n<=8?'3x63':(n<=12?'3x200':'3x400'); }
+function defaultState(){
+  return {project:'',building:'',floors:20,jordan:'no',
+    groups:[{from:1,to:20,types:[{count:4,rooms:'5',area:'',conn:'3x25',auto:true}]}],
+    pubs:[{conn:'3x400',count:1,auto:true}], coms:[]};
+}
+function emptyState(){
+  const st=defaultState(); st.floors=''; st.jordan='no';
+  st.groups=[{from:'',to:'',types:[{count:'',rooms:'',area:'',conn:'',auto:true}]}];
+  st.pubs=[{conn:'',count:1,auto:true}]; st.coms=[];
+  return st;
+}
+let S = defaultState();
+let PROJ = {project:'', list:[S], active:0, tx:{...DEF_TX}, park:defPark()};
+function projFrom(o){
+  const fix=b=>{ const st=Object.assign(defaultState(), b||{}); if(!Array.isArray(st.pubs)) st.pubs=[]; if(!Array.isArray(st.coms)) st.coms=[]; return st; };
+  let p;
+  if(o && Array.isArray(o.list) && o.list.length) p={project:o.project||'', list:o.list.map(fix), active:Math.min(o.active||0,o.list.length-1)};
+  else { const b=fix(o); p={project:b.project||'', list:[b], active:0}; }
+  p.tx=Object.assign({...DEF_TX}, o&&o.tx||{});
+  p.roomMix=o&&o.roomMix||'';
+  p.park=o&&o.park&&Array.isArray(o.park.rows) ? {bld:o.park.bld??0, rows:o.park.rows} : defPark();
+  return p;
+}
+try{ const s2=localStorage.getItem('tiktin_iec_tx'); if(s2) PROJ=projFrom(JSON.parse(s2)); S=PROJ.list[PROJ.active]; }catch(e){}
+function persist(){ try{ localStorage.setItem('tiktin_iec_tx', JSON.stringify(PROJ)); }catch(e){} }
+function bldName(b,i){ return (b.building||'').trim() || ('בניין '+(i+1)); }
+function renderTabs(){
+  const el=document.getElementById('tabs');
+  el.innerHTML = PROJ.list.map((b,i)=>`<button class="tab ${i===PROJ.active?'on':''}" data-i="${i}" title="מעבר לבניין">${esc(bldName(b,i))}${PROJ.list.length>1?`<span class="tx" data-del="${i}" title="הסרת הבניין">✕</span>`:''}</button>`).join('') +
+    `<button class="tab add" id="tabAdd" title="הוספת בניין נוסף">＋ בניין</button>`;
+  el.querySelectorAll('.tab[data-i]').forEach(t=>t.addEventListener('click',e=>{
+    const del=e.target.closest('[data-del]');
+    if(del){ const i=+del.dataset.del; if(!confirm(`להסיר את ${bldName(PROJ.list[i],i)}?`)) return; PROJ.list.splice(i,1);
+      if(PROJ.park.bld===i) PROJ.park.bld=0; else if(PROJ.park.bld>i) PROJ.park.bld--;
+      PROJ.active=Math.min(PROJ.active,PROJ.list.length-1); S=PROJ.list[PROJ.active]; fullRender(); return; }
+    PROJ.active=+t.dataset.i; S=PROJ.list[PROJ.active]; fullRender(); }));
+  document.getElementById('tabAdd').addEventListener('click',()=>{ const st=emptyState(); st.project=PROJ.project; st.building='בניין '+(PROJ.list.length+1); PROJ.list.push(st); PROJ.active=PROJ.list.length-1; S=st; fullRender(); });
+}
+async function forEachBuilding(fn){ const keepS=S, keepL=LAST; try{ for(let i=0;i<PROJ.list.length;i++){ S=PROJ.list[i]; LAST=compute(i); await fn(S,i); } } finally { S=keepS; LAST=keepL; } }
+const num = (v,d=0) => { const x=parseFloat(String(v).replace(',','.')); return isFinite(x)?x:d; };
+
+/* ---------- field helpers ---------- */
+function enhance(root){
+  root.querySelectorAll('.fld').forEach(f=>{
+    if(f.querySelector('.x')) return;
+    const el = f.querySelector('input,select'); if(!el) return;
+    const b = document.createElement('button'); b.type='button'; b.className='x'; b.textContent='✕'; b.title='ניקוי השדה'; b.tabIndex=-1;
+    b.addEventListener('click',()=>{
+      if(el.tagName==='SELECT'){ el.value = el.dataset.def ?? el.options[0].value; el.dispatchEvent(new Event('change',{bubbles:true})); }
+      else { el.value=''; el.dispatchEvent(new Event('input',{bubbles:true})); }
+      el.focus();
+    });
+    f.appendChild(b);
+    if(el.tagName==='INPUT'){
+      el.addEventListener('focus',()=>{ el._fresh=true; setTimeout(()=>{ try{ if(el._fresh) el.select(); }catch(e){} },0); });
+      el.addEventListener('blur',()=>{ el._fresh=false; });
+      el.addEventListener('mouseup',e=>{ if(el._fresh) e.preventDefault(); });
+      el.addEventListener('keydown',e=>{
+        if(el._fresh && e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey){ el.value=''; }
+        if(e.key!=='Tab' && e.key!=='Shift') el._fresh=false;
+      });
+    }
+  });
+}
+function fld(inner){ return `<span class="fld">${inner}</span>`; }
+
+/* ---------- top inputs ---------- */
+const TOP = ['project','building','floors','jordan'];
+function loadTop(){ TOP.forEach(k=>{ document.getElementById(k).value = S[k]; }); }
+TOP.forEach(k=>{
+  const el=document.getElementById(k);
+  const h=()=>{ S[k]=el.value; if(k==='project'){ PROJ.project=el.value; PROJ.list.forEach(b=>b.project=el.value); } if(k==='building'){ renderTabs(); renderPark(); } if(k==='floors') renderConns(); recalc(); };
+  el.addEventListener('input',h); el.addEventListener('change',h);
+});
+
+/* ---------- groups ---------- */
+function renderGroups(){
+  const box=document.getElementById('groups');
+  box.innerHTML = S.groups.map((g,gi)=>`
+    <div class="group" data-g="${gi}">
+      <div class="ghead">מקבץ ${gi+1} <span class="st" id="gst${gi}"></span><span style="flex:1"></span>
+        <button class="btn small" data-act="delg" title="מחיקת המקבץ">מחיקה</button></div>
+      <div class="grid g2" style="margin-bottom:8px">
+        <label class="f"><span class="lbl">מקומה</span>${fld(`<input data-gf="from" inputmode="numeric" value="${g.from}" title="קומה ראשונה במקבץ (קרקע = 0)">`)}</label>
+        <label class="f"><span class="lbl">עד קומה</span>${fld(`<input data-gf="to" inputmode="numeric" value="${g.to}" title="קומה אחרונה במקבץ">`)}</label>
+      </div>
+      ${g.types.map((t,ti)=>`
+      <div class="trow" data-t="${ti}">
+        <label class="f"><span class="lbl">דירות בקומה</span>${fld(`<input data-tf="count" inputmode="numeric" value="${t.count}" title="כמות דירות מסוג זה בכל קומה">`)}</label>
+        <label class="f"><span class="lbl">חדרים</span>${fld(`<select data-tf="rooms" data-def="" title="מס׳ חדרים – קובע את שיא הביקוש לפי חח״י"><option value="" ${!t.rooms?'selected':''}>—</option>${ROOMS.map(r=>`<option value="${r}" ${t.rooms===r?'selected':''}>${ROOM_LBL[r]}</option>`).join('')}</select>`)}</label>
+        <label class="f"><span class="lbl">שטח [מ״ר]</span>${fld(`<input data-tf="area" inputmode="decimal" value="${t.area}" title="לא חובה – קובע גודל חיבור ברירת מחדל">`)}</label>
+        <label class="f"><span class="lbl">חיבור&nbsp;<span id="sub${gi}_${ti}"></span></span>${fld(`<select data-tf="conn" data-def="" title="גודל חיבור הדירה"><option value="" ${!t.conn?'selected':''}>—</option>${CONNS.map(c=>`<option value="${c}" ${t.conn===c?'selected':''}>${CONN_LBL(c)}</option>`).join('')}</select>`)}</label>
+        <button class="del" data-act="delt" title="מחיקת סוג הדירה">✕</button>
+      </div>`).join('')}
+      <button class="btn small" data-act="addt" title="הוספת סוג דירה נוסף במקבץ">＋ סוג דירה</button>
+    </div>`).join('');
+  box.querySelectorAll('.group').forEach(gEl=>{
+    const gi=+gEl.dataset.g, g=S.groups[gi];
+    gEl.querySelectorAll('[data-gf]').forEach(el=>el.addEventListener('input',()=>{ g[el.dataset.gf]=el.value; recalc(); }));
+    gEl.querySelectorAll('.trow').forEach(tEl=>{
+      const ti=+tEl.dataset.t, t=g.types[ti];
+      const connSel=tEl.querySelector('[data-tf=conn]');
+      tEl.querySelectorAll('[data-tf]').forEach(el=>{
+        const h=()=>{
+          const f=el.dataset.tf; t[f]=el.value;
+          if(f==='conn'){ t.auto=false; }
+          if((f==='rooms'||f==='area') && t.auto!==false){ t.conn=defaultConn(t.rooms,t.area); connSel.value=t.conn; }
+          if((f==='area') && el.value===''){ t.auto=true; t.conn=defaultConn(t.rooms,''); connSel.value=t.conn; }
+          recalc();
+        };
+        el.addEventListener('input',h); el.addEventListener('change',h);
+      });
+      tEl.querySelector('[data-act=delt]').addEventListener('click',()=>{ g.types.splice(ti,1); if(!g.types.length) g.types.push({count:'',rooms:'5',area:'',conn:'3x25',auto:true}); renderGroups(); recalc(); });
+    });
+    gEl.querySelector('[data-act=addt]').addEventListener('click',()=>{ g.types.push({count:'',rooms:'5',area:'',conn:'3x25',auto:true}); renderGroups(); recalc(); });
+    gEl.querySelector('[data-act=delg]').addEventListener('click',()=>{ S.groups.splice(gi,1); renderGroups(); recalc(); });
+  });
+  enhance(box);
+}
+document.getElementById('addGroup').addEventListener('click',()=>{
+  const last=S.groups[S.groups.length-1]; const st = last? num(last.to)+1 : 0;
+  S.groups.push({from:st,to:Math.max(st,num(S.floors)),types:[{count:'',rooms:'5',area:'',conn:'3x25',auto:true}]});
+  renderGroups(); recalc();
+});
+
+/* ---------- public / commercial inputs (per building) ---------- */
+function connOpts(list, cur){ return `<option value="" ${!cur?'selected':''}>—</option>`+list.map(c=>`<option value="${c}" ${cur===c?'selected':''}>${CONN_LBL(c)}</option>`).join(''); }
+function renderConns(){
+  const box=document.getElementById('connBox');
+  if(S.pubs.length && S.pubs[0].auto!==false){ const d=defPub(S.floors); if(d) S.pubs[0].conn=d; }
+  const row=(kind,r,i)=>`<div class="crow" data-k="${kind}" data-i="${i}">
+      <label class="f"><span class="lbl">${kind==='pubs'?'חיבור ציבורי בניין':'חיבור מסחר / משרדים'}${kind==='pubs'&&i===0&&r.auto!==false?' <span class="muted">(ברירת מחדל)</span>':''}</span>${fld(`<select data-cf="conn" data-def="" title="${kind==='pubs'?'גודל החיבור הציבורי של הבניין':'גודל חיבור יחידת המסחר / המשרד'}">${connOpts(kind==='pubs'?PUB_CONNS:COM_CONNS,r.conn)}</select>`)}</label>
+      <label class="f"><span class="lbl">כמות</span>${fld(`<input data-cf="count" inputmode="numeric" value="${r.count}" title="מספר חיבורים בגודל הזה">`)}</label>
+      <button class="del" data-act="delc" title="מחיקת השורה">✕</button></div>`;
+  box.innerHTML = `<h3>ציבורי בניין</h3>${S.pubs.map((r,i)=>row('pubs',r,i)).join('')}
+    <button class="btn small" data-add="pubs" title="הוספת חיבור ציבורי נוסף">＋ חיבור ציבורי</button>
+    <h3>מסחר / משרדים בבניין</h3>${S.coms.length?S.coms.map((r,i)=>row('coms',r,i)).join(''):'<div class="muted">אין יחידות מסחר בבניין</div>'}
+    <button class="btn small" data-add="coms" title="הוספת יחידת מסחר / משרד">＋ יחידת מסחר</button>`;
+  box.querySelectorAll('.crow').forEach(rEl=>{
+    const arr=S[rEl.dataset.k], i=+rEl.dataset.i, r=arr[i];
+    rEl.querySelectorAll('[data-cf]').forEach(el=>{ const h=()=>{ r[el.dataset.cf]=el.value; if(el.dataset.cf==='conn') r.auto=false; recalc(); }; el.addEventListener('input',h); el.addEventListener('change',h); });
+    rEl.querySelector('[data-act=delc]').addEventListener('click',()=>{ arr.splice(i,1); renderConns(); recalc(); });
+  });
+  box.querySelectorAll('[data-add]').forEach(b=>b.addEventListener('click',()=>{ S[b.dataset.add].push({conn:'',count:1,auto:false}); renderConns(); recalc(); }));
+  enhance(box);
+}
+
+/* ---------- parking (project) ---------- */
+function renderPark(){
+  const box=document.getElementById('parkBox'), P=PROJ.park;
+  if(P.bld>=PROJ.list.length) P.bld=0;
+  box.innerHTML = `<div class="grid g2" style="margin-bottom:8px">
+      <label class="f"><span class="lbl">החניון משויך לבניין</span>${fld(`<select id="parkBld" data-def="0" title="החניון והחיבורים שלו נכנסים לשנאים של הבניין הזה">${PROJ.list.map((b,i)=>`<option value="${i}" ${P.bld===i?'selected':''}>${esc(bldName(b,i))}</option>`).join('')}<option value="-1" ${P.bld===-1?'selected':''}>אין מרתף חניה</option></select>`)}</label>
+      <span></span></div>
+    ${P.rows.map((r,i)=>`<div class="prow" data-i="${i}">
+      <label class="f"><span class="lbl">תיאור</span>${fld(`<input data-pf="name" value="${esc(r.name)}" title="שם החיבור – יופיע בדוח">`)}</label>
+      <label class="f"><span class="lbl">גודל חיבור</span>${fld(`<select data-pf="conn" data-def="" title="גודל החיבור">${connOpts(PUB_CONNS,r.conn)}</select>`)}</label>
+      <label class="f"><span class="lbl">כמות</span>${fld(`<input data-pf="count" inputmode="numeric" value="${r.count}" title="מספר חיבורים בגודל הזה">`)}</label>
+      <button class="del" data-act="delp" title="מחיקת השורה">✕</button></div>`).join('')}
+    <button class="btn small" id="addPark" title="הוספת חיבור לחניון">＋ חיבור חניון</button>`;
+  box.querySelector('#parkBld').addEventListener('change',e=>{ P.bld=+e.target.value; recalc(); });
+  box.querySelectorAll('.prow').forEach(rEl=>{ const i=+rEl.dataset.i, r=P.rows[i];
+    rEl.querySelectorAll('[data-pf]').forEach(el=>{ const h=()=>{ r[el.dataset.pf]=el.value; recalc(); }; el.addEventListener('input',h); el.addEventListener('change',h); });
+    rEl.querySelector('[data-act=delp]').addEventListener('click',()=>{ P.rows.splice(i,1); renderPark(); recalc(); }); });
+  box.querySelector('#addPark').addEventListener('click',()=>{ P.rows.push({name:'',conn:'',count:1}); renderPark(); recalc(); });
+  enhance(box);
+}
+
+/* ---------- transformer settings (project) ---------- */
+const TXF = ()=> 1.0; // תחנה בתוך הבניין – תמיד שנאי יבש, העמסה עד 100%
+function renderTx(){
+  const box=document.getElementById('txBox'), T=PROJ.tx;
+  if(T.max630==null||T.max630==='') T.max630=100;
+  const off=T.allow1000==='no'?'disabled':'';
+  const kva=(s)=>{ const v=num(T['max'+s],NaN); return isFinite(v)? +(s*v/100).toFixed(1) : ''; };
+  box.innerHTML = `<div class="grid g3">
+    <label class="f"><span class="lbl">סוג שנאי</span><span class="ro" title="תחנה בתוך הבניין – תמיד שנאי יבש">יבש בתחט״פ</span></label>
+    <label class="f"><span class="lbl">שימוש בשנאי 1000 בתחנה</span>${fld(`<select data-x="allow1000" data-def="yes" title="אם לא – כל בניין שגדול מ־630 מקבל שנאי 630 נוספים"><option value="yes">כן</option><option value="no">לא – רק 630</option></select>`)}</label>
+    <label class="f"><span class="lbl">שנאים בחדר שנאים</span><span class="ro" title="חדר שנאים מכיל 1 עד 3 שנאים – מעבר לכך נפתח חדר נוסף">עד 3</span></label>
+  </div>
+  <h3>העמסה מותרת</h3><div class="grid g4">
+    <label class="f"><span class="lbl">שנאי 630 – אחוז</span>${fld(`<input data-cap="630" data-u="pct" inputmode="decimal" data-def="100" value="${T.max630}" title="אחוז ההעמסה המרבי לשנאי 630 – מתעדכן גם בקו״א">`)}</label>
+    <label class="f"><span class="lbl">שנאי 630 – kVA</span>${fld(`<input data-cap="630" data-u="kva" inputmode="decimal" value="${kva(630)}" title="ההעמסה המרבית בקו״א – מתעדכן גם באחוזים">`)}</label>
+    <label class="f"><span class="lbl">שנאי 1000 – אחוז</span>${fld(`<input data-cap="1000" data-u="pct" inputmode="decimal" data-def="100" value="${T.max1000}" title="מעל ההעמסה הזו עוברים ל־2 שנאי 630 במקום שנאי 1000" ${off}>`)}</label>
+    <label class="f"><span class="lbl">שנאי 1000 – kVA</span>${fld(`<input data-cap="1000" data-u="kva" inputmode="decimal" value="${kva(1000)}" title="ההעמסה המרבית בקו״א – מתעדכן גם באחוזים" ${off}>`)}</label>
+  </div>`;
+  box.querySelectorAll('[data-x]').forEach(el=>{ if(el.tagName==='SELECT') el.value=T[el.dataset.x];
+    const h=()=>{ T[el.dataset.x]=el.value; if(el.dataset.x==='allow1000') renderTx(); recalc(); }; el.addEventListener('input',h); el.addEventListener('change',h); });
+  box.querySelectorAll('[data-cap]').forEach(el=>{
+    const s=+el.dataset.cap, other=box.querySelector(`[data-cap="${s}"][data-u="${el.dataset.u==='pct'?'kva':'pct'}"]`);
+    el.addEventListener('input',()=>{
+      const v=num(el.value,NaN);
+      if(el.dataset.u==='pct'){ T['max'+s]=el.value; other.value = isFinite(v)? +(s*v/100).toFixed(1) : ''; }
+      else { const pct=isFinite(v)? +(v/s*100).toFixed(2) : ''; T['max'+s]=pct; other.value=pct; }
+      recalc(); });
+  });
+  enhance(box);
+}
+
+/* ---------- IEC load calculation (מחשבון עומסים חח"י – נוהל 733-006-004-010) ---------- */
+const AMP_PER_KVA = 1000/(Math.sqrt(3)*400), KVA_PER_A = 1/AMP_PER_KVA, GF = Math.pow(1.01,5);
+const UTIL = {'1x40':.99,'3x25':.99,'3x40':.99,'3x63':.96,'3x80':.91,'3x100':.83,'3x125':.81,'3x160':.79,'3x200':.79,'3x250':.78,'3x315':.78,'3x400':.76,'3x500':.8,'3x630':.77,'3x800':.79,'3x910':.78};
+const NON_K=[0,1,.92,.88,.86,.85,.84,.83,.82,.81,.81];
+const nonK=n=> n<=0?0:(n<=10?NON_K[n]:.8);
+const ampsOf=c=> c==='1x40'?40/3:+String(c).split('x')[1];
+// לא ביתי: Σ(כמות × מקדם ניצול × זרם) × מקדם התלכדות לא ביתי
+function nonDom(conns){
+  const g={}; conns.forEach(c=>{ g[c]=(g[c]||0)+1; });
+  let N=0,sum=0,mx=0,types=0;
+  Object.entries(g).forEach(([c,n])=>{ const q=n*UTIL[c]*ampsOf(c); N+=n; sum+=q; mx=Math.max(mx,q); types++; });
+  let I=sum*nonK(N); if(I<mx && !(N>types)) I=mx;
+  return {N,k:nonK(N),I,P:I*KVA_PER_A};
+}
+// set: {n, p (Σ שיא kVA), pubs:[conn] (ציבורי + חניון), coms:[conn]}
+// mode: לשנאי בלי דירות – 'dom' (ברירת מחדל, צרכנות ביתית) או 'non' (צרכנות לא ביתית)
+function calcLoad(set, jordan, mode){
+  const pubA=set.pubs.reduce((s,c)=>s+ampsOf(c),0);
+  const withCom=(r)=>{ if(set.coms.length){ const nd=nonDom(set.coms); r.nd=nd; r.Sc=nd.P; r.win=r.Sd+0.5*nd.P; r.sum=0.7*r.Sd+nd.P; r.P=Math.max(r.win,r.sum); r.mode='מעורב'; } return r; };
+  if(set.n>0){
+    const k=coinc(set.n,jordan), P0=k*set.p/0.95, Pg=P0*GF;
+    const add = pubA > 0.3*Pg*AMP_PER_KVA;
+    const Sd = Pg + (add? 0.5*pubA*KVA_PER_A : 0);
+    return withCom({mode:'ביתי',n:set.n,sumP:set.p,k,P0,Pg,pubA,add,addKva:add?0.5*pubA*KVA_PER_A:0,Sd,P:Sd});
+  }
+  if(!set.pubs.length && !set.coms.length) return {mode:'–',n:0,P:0,pubA:0,noApt:true};
+  if(mode==='non'){ const nd=nonDom([...set.pubs,...set.coms]); return {mode:'לא ביתי',n:0,nd,pubA,P:nd.P,noApt:true}; }
+  // צרכנות ביתית ללא דירות: ציבורי בניין וציבורי חניון – 50% מהספק החיבורים (כלל הציבורי של מחשבון חח״י)
+  const Sd=0.5*pubA*KVA_PER_A;
+  return Object.assign(withCom({mode:'ביתי',n:0,pubA,add:pubA>0,addKva:Sd,Sd,P:Sd}),{noApt:true});
+}
+
+/* ---------- floors from groups (as in the shaft form) ---------- */
+function computeFloors(){
+  const N = Math.max(0, Math.min(150, Math.round(num(S.floors))));
+  const floors=[]; for(let f=0; f<=N; f++) floors.push({f, n:0, p:0, g:null, subst:false});
+  const gErr=[];
+  S.groups.forEach((g,gi)=>{
+    const a=Math.round(num(g.from,NaN)), b=Math.round(num(g.to,NaN)); let err='';
+    if(String(g.from).trim()===''&&String(g.to).trim()===''){ gErr[gi]={err:'',n:0,p:0,empty:true}; return; }
+    if(!isFinite(a)||!isFinite(b)) err='חסרות קומות';
+    else if(a>b) err='שגיאה: התחלה אחרי סיום';
+    else if(a<0) err='שגיאה: מתחת לקרקע';
+    else if(b>N) err='שגיאה: מעל מספר הקומות';
+    else { for(let gj=0; gj<S.groups.length; gj++){ if(gj===gi) continue; const a2=num(S.groups[gj].from,NaN), b2=num(S.groups[gj].to,NaN); if(isFinite(a2)&&isFinite(b2)&&a2<=b&&b2>=a){ err='שגיאה: חפיפת קומות עם מקבץ '+(gj+1); break; } } }
+    let n=0,p=0,subst=false;
+    g.types.forEach(t=>{ const c=Math.max(0,Math.round(num(t.count))); const d=demand(t.rooms,t.conn); n+=c; p+=c*d.p; if(c>0&&d.subst) subst=true; });
+    gErr[gi]={err,n,p};
+    if(err && !/^שגיאה: חפיפת/.test(err)) return;
+    for(let f=Math.max(0,a); f<=Math.min(N,b); f++){ if(floors[f].g===null){ floors[f].n=n; floors[f].p=p; floors[f].g=gi; floors[f].subst=subst; } }
+  });
+  return {N,floors,gErr};
+}
+
+/* ---------- transformer allocation per building ---------- */
+// סדר המילוי: דירות (מלמטה למעלה, קומות שלמות) ← ציבורי בניין ← מסחר ← מרתף חניה
+function buildingItems(bi){
+  const F=computeFloors(), items=[];
+  F.floors.forEach(fl=>{ if(fl.n>0) items.push({kind:'floor',f:fl.f,n:fl.n,p:fl.p}); });
+  S.pubs.forEach(r=>{ if(!r.conn) return; for(let i=0;i<Math.max(0,Math.round(num(r.count)));i++) items.push({kind:'pub',conn:r.conn,label:'ציבורי בניין'}); });
+  S.coms.forEach(r=>{ if(!r.conn) return; for(let i=0;i<Math.max(0,Math.round(num(r.count)));i++) items.push({kind:'com',conn:r.conn,label:'מסחר / משרדים'}); });
+  if(PROJ.park.bld===bi) PROJ.park.rows.forEach(r=>{ if(!r.conn) return; for(let i=0;i<Math.max(0,Math.round(num(r.count)));i++) items.push({kind:'park',conn:r.conn,label:r.name||'חניון'}); });
+  return {F,items};
+}
+function setOf(items){ const s={n:0,p:0,pubs:[],coms:[]}; items.forEach(it=>{ if(it.kind==='floor'){ s.n+=it.n; s.p+=it.p; } else if(it.kind==='com') s.coms.push(it.conn); else s.pubs.push(it.conn); }); return s; }
+function allocate(items, jordan){
+  const f=TXF(), cap630=630*f*Math.max(1,num(PROJ.tx.max630,100))/100, cap1000=1000*f*Math.max(1,num(PROJ.tx.max1000,100))/100, allow=PROJ.tx.allow1000!=='no';
+  const modes=S.txMode||{};
+  const L=(its,idx)=>calcLoad(setOf(its),jordan,modes[idx]);
+  const total=L(items,0);
+  if(!items.length || total.P<=0) return {total,tx:[],cap630,cap1000};
+  const mk=(size,its,load,over)=>({size,items:its,load,cap:size===1000?cap1000:cap630,over:!!over});
+  if(total.P<=cap630) return {total,tx:[mk(630,items,total)],cap630,cap1000};
+  if(allow && total.P<=cap1000) return {total,tx:[mk(1000,items,total)],cap630,cap1000};
+  const tx=[]; let cur=[];
+  for(let i=0;i<items.length;){
+    const trial=[...cur,items[i]];
+    if(L(trial,tx.length).P<=cap630){ cur=trial; i++; continue; }
+    if(!cur.length){ tx.push(mk(630,[items[i]],L([items[i]],tx.length),true)); i++; continue; }
+    tx.push(mk(630,cur,L(cur,tx.length))); cur=[];
+  }
+  if(cur.length) tx.push(mk(630,cur,L(cur,tx.length)));
+  const tot2=tx.reduce((s,t)=>s+t.load.P,0);
+  return {total,tx,cap630,cap1000};
+}
+function describe(items){
+  const fl=items.filter(x=>x.kind==='floor'), out=[];
+  if(fl.length){ const n=fl.reduce((s,x)=>s+x.n,0); out.push(`דירות: קומות ${fl[0].f}–${fl[fl.length-1].f} (${n} דירות)`); }
+  const cnt={}; items.filter(x=>x.kind!=='floor').forEach(x=>{ const k=x.label+' '+CONN_LBL(x.conn); cnt[k]=(cnt[k]||0)+1; });
+  Object.entries(cnt).forEach(([k,n])=>out.push((n>1?n+' × ':'')+k));
+  return out;
+}
+function compute(bi){
+  if(bi==null) bi=PROJ.active;
+  const jordan=S.jordan==='yes';
+  const {F,items}=buildingItems(bi);
+  const A=allocate(items,jordan);
+  return {...F, items, ...A, jordan};
+}
+// כל החלוקות האפשריות של השנאים לחדרים – 1 עד 3 שנאים בחדר; ראשונה: מינימום חדרים, חלוקה שווה
+function roomMixes(n){
+  const out=[]; const rec=(left,max,acc)=>{ if(!left){ out.push(acc); return; } for(let k=Math.min(3,max,left);k>=1;k--) rec(left-k,k,[...acc,k]); };
+  if(n>0) rec(n,3,[]);
+  const bal=a=>Math.max(...a)-Math.min(...a);
+  return out.sort((a,b)=>a.length-b.length || bal(a)-bal(b));
+}
+function projectSummary(){
+  const keepS=S, rows=[]; let c630=0,c1000=0;
+  PROJ.list.forEach((b,i)=>{ S=b; const R=compute(i); const n=R.floors.reduce((s,f)=>s+f.n,0);
+    R.tx.forEach(t=>t.size===1000?c1000++:c630++);
+    rows.push({name:bldName(b,i), units:n, P:R.total.P, tx:R.tx.map(t=>t.size), park:PROJ.park.bld===i}); });
+  S=keepS;
+  const tot=c630+c1000, opts=roomMixes(tot);
+  const per=(opts.find(o=>o.join('+')===PROJ.roomMix)||opts[0]||[]);
+  return {rows,c630,c1000,tot,rooms:per.length,per,opts};
+}
+const txLabel=list=>{ if(!list.length) return '–'; const c={}; list.forEach(s=>c[s]=(c[s]||0)+1); return Object.entries(c).sort((a,b)=>b[0]-a[0]).map(([s,n])=>`${n} × ${s}`).join(' + '); };
+
+/* ---------- render results ---------- */
+const fmt=(v,d=1)=> (Math.round(v*10**d)/10**d).toLocaleString('he-IL');
+const esc = v => String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+let LAST=null;
+function txRows(R){
+  return R.tx.map((t,i)=>({no:i+1,size:t.size,feeds:describe(t.items),mode:t.load.mode,P:t.load.P,I:t.load.P*AMP_PER_KVA,cap:t.cap,util:t.load.P/t.cap,over:t.over,L:t.load}));
+}
+function detailRows(R){
+  return txRows(R).map(t=>{ const L=t.L;
+    return [t.no, L.n||'–', L.n?fmt(L.k,2):'–', L.n?fmt(L.sumP):'–', L.n?fmt(L.P0):'–', L.n?fmt(L.Pg):'–', L.pubA?fmt(L.pubA,0):'–', (L.n||(L.noApt&&L.mode!=='לא ביתי'&&L.pubA))?(L.add?'כן – '+fmt(L.addKva):'לא'):'–', L.nd?fmt(L.nd.P):'–', L.win!=null?fmt(L.win):'–', L.sum!=null?fmt(L.sum):'–', fmt(L.P)]; });
+}
+const DET_HEAD=['שנאי','דירות','מקדם התלכדות','Σ שיא ביקוש [kVA]','הספק התחלתי [kVA]','אחרי גידול ×1.051 [kVA]','ציבורי + חניון [A]','תוספת 50% ציבורי (מעל 30%)','לא ביתי [kVA]','שיא חורף [kVA]','שיא קיץ [kVA]','עומס לשנאי [kVA]'];
+function renderResults(R){
+  const b=bldName(S,PROJ.active), rows=txRows(R);
+  const any=R.total.P>0;
+  const bad=rows.some(t=>t.over);
+  const st = !any ? `<div class="status">אין נתונים לחישוב</div>` : bad ? `<div class="status badb">חיבור בודד גדול מהעמסה המותרת של שנאי 630 – יש לבדוק מול חח״י</div>` : `<div class="status okb">תקין – כל שנאי בתוך ההעמסה המותרת</div>`;
+  document.getElementById('resB').innerHTML = `<h2><span class="num">6</span>שנאים לבניין – ${esc(b)}</h2>
+    <div class="kpis">
+      <div class="kpi main"><b>${txLabel(R.tx.map(t=>t.size))}</b><small>שנאים לבניין [kVA]</small></div>
+      <div class="kpi"><b>${fmt(R.total.P,0)}</b><small>עומס כולל לבניין [kVA]</small></div>
+      <div class="kpi"><b>${fmt(R.total.P*AMP_PER_KVA,0)}</b><small>זרם כולל [A]</small></div>
+      <div class="kpi"><b>${R.total.mode}</b><small>אופן חישוב חח״י</small></div>
+    </div>${st}
+    <div class="tblwrap"><table><thead><tr><th>שנאי</th><th>גודל [kVA]</th><th>מזין</th><th>חישוב</th><th>עומס [kVA]</th><th>זרם [A]</th><th>העמסה מותרת [kVA]</th><th>ניצול</th></tr></thead><tbody>
+    ${rows.map(t=>`<tr><td>${t.no}</td><td><b>${t.size}</b></td><td style="text-align:right">${t.feeds.map(esc).join('<br>')}</td><td>${t.L.noApt?fld(`<select data-txm="${t.no-1}" data-def="dom" title="שנאי שלא מזין דירות – ברירת מחדל צרכנות ביתית"><option value="dom" ${t.L.mode!=='לא ביתי'?'selected':''}>ביתית</option><option value="non" ${t.L.mode==='לא ביתי'?'selected':''}>לא ביתית</option></select>`):t.mode}</td><td>${fmt(t.P)}</td><td>${fmt(t.I,0)}</td><td>${fmt(t.cap,0)}</td><td class="${t.util>1?'bad':''}">${Math.round(t.util*100)}%</td></tr>`).join('')}
+    </tbody></table></div>`;
+  const rb=document.getElementById('resB');
+  rb.querySelectorAll('[data-txm]').forEach(el=>el.addEventListener('change',()=>{ S.txMode=S.txMode||{}; S.txMode[el.dataset.txm]=el.value; recalc(); }));
+  enhance(rb);
+  const PS=projectSummary();
+  document.getElementById('resP').innerHTML = `<h2><span class="num">7</span>סיכום פרויקט – שנאים וחדרי שנאים</h2>
+    <div class="kpis">
+      <div class="kpi main"><b>${PS.tot}</b><small>סה״כ שנאים</small></div>
+      <div class="kpi"><b>${PS.c630}</b><small>שנאי 630</small></div>
+      <div class="kpi"><b>${PS.c1000}</b><small>שנאי 1000</small></div>
+      <div class="kpi main"><b>${PS.rooms}</b><small>חדרי שנאים${PS.rooms?' ('+PS.per.join('+')+')':''}</small></div>
+    </div>
+    ${PS.tot?`<div class="grid g2" style="margin-bottom:10px"><label class="f"><span class="lbl">חלוקת השנאים לחדרי שנאים</span>${fld(`<select id="roomMix" data-def="${PS.opts[0].join('+')}" title="בחירת מספר השנאים בכל חדר – 1 עד 3 שנאים בחדר">${PS.opts.map(o=>`<option value="${o.join('+')}" ${o.join('+')===PS.per.join('+')?'selected':''}>${o.length} חדרים: ${o.join(' + ')} שנאים</option>`).join('')}</select>`)}</label><span></span></div>`:''}
+    <div class="tblwrap"><table><thead><tr><th>בניין</th><th>יח״ד</th><th>חניון</th><th>עומס [kVA]</th><th>שנאים [kVA]</th></tr></thead><tbody>
+    ${PS.rows.map(r=>`<tr><td>${esc(r.name)}</td><td>${r.units}</td><td>${r.park?'✔':''}</td><td>${fmt(r.P,0)}</td><td><b>${txLabel(r.tx)}</b></td></tr>`).join('')}
+    </tbody></table></div>
+    <div class="muted" style="margin-top:6px">חדר שנאים מכיל 1 עד 3 שנאים – מעבר לכך נפתח חדר נוסף.</div>`;
+  const rm=document.getElementById('roomMix'); if(rm){ rm.addEventListener('change',()=>{ PROJ.roomMix=rm.value; recalc(); }); enhance(document.getElementById('resP')); }
+  document.getElementById('detTbl').innerHTML = `<thead><tr>${DET_HEAD.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${detailRows(R).map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody>`;
+}
+function recalc(){
+  persist();
+  const R=compute(); LAST=R;
+  R.gErr.forEach((g,gi)=>{ const el=document.getElementById('gst'+gi); if(el) el.innerHTML = g.empty? '' : g.err? `<span class="bad">${g.err}</span>` : `<span class="ok">תקין</span> · ${g.n} דירות בקומה · ${fmt(g.p)} kVA`; });
+  S.groups.forEach((g,gi)=>g.types.forEach((t,ti)=>{ const el=document.getElementById(`sub${gi}_${ti}`); if(el){ const d=demand(t.rooms,t.conn); el.innerHTML = `<span title="שיא ביקוש לדירה לפי חח״י${d.subst?' – צירוף לא קיים בטבלה, נלקח מהשורה הקרובה':''}">(${fmt(d.p)} kVA${d.subst?' ✱':''})</span>`; } }));
+  const tn=R.floors.reduce((s,f)=>s+f.n,0), tp=R.floors.reduce((s,f)=>s+f.p,0);
+  document.getElementById('unitsTotal').textContent = tn; document.getElementById('kvaTotal').textContent = fmt(tp);
+  document.getElementById('totals').innerHTML = `סה״כ ${tn} דירות · Σ שיא ביקוש ${fmt(tp)} kVA`;
+  const c6=document.getElementById('cap630'), c10=document.getElementById('cap1000');
+  if(c6) c6.textContent=fmt(R.cap630,0)+' kVA'; if(c10) c10.textContent= PROJ.tx.allow1000==='no'?'לא בשימוש':fmt(R.cap1000,0)+' kVA';
+  { const si=substItems(), el=document.getElementById('starNote'); el.style.display=si.length?'block':'none'; el.innerHTML='<b>דירות המסומנות ✱:</b><br>'+si.join('<br>'); }
+  renderResults(R);
+}
+
+/* ---------- toolbar ---------- */
+function fullRender(){ S.project=PROJ.project; renderTabs(); loadTop(); renderGroups(); renderConns(); renderPark(); renderTx(); enhance(document.getElementById('inputs')); recalc(); }
+document.getElementById('bReset').addEventListener('click',()=>{ if(!confirm('לאפס את כל השדות?')) return; S=emptyState(); PROJ={project:'',list:[S],active:0,tx:{...DEF_TX},park:defPark()}; fullRender(); });
+const fname = ext => `שנאים חחי - ${PROJ.project||'פרויקט'}.${ext}`;
+function download(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{URL.revokeObjectURL(a.href); a.remove();},500); }
+document.getElementById('bSave').addEventListener('click',()=>download(new Blob([JSON.stringify(PROJ,null,1)],{type:'application/json'}), fname('json')));
+document.getElementById('bLoad').addEventListener('click',()=>document.getElementById('fLoad').click());
+document.getElementById('fLoad').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ PROJ=projFrom(JSON.parse(rd.result)); S=PROJ.list[PROJ.active]; fullRender(); }catch(err){ alert('קובץ לא תקין'); } }; rd.readAsText(f); e.target.value=''; });
+
+/* ---------- report content (shared by PDF / Word / Excel) ---------- */
+const todayStr = () => new Date().toLocaleDateString('he-IL');
+const RC = {red:'#c8202f', dark:'#1f2328', muted:'#5f6670', line:'#cfd4da', head:'#f3f4f6', soft:'#fff4ef'};
+const LOGO = () => document.querySelector('header img').src;
+const settingsTxt = () => `שנאי יבש בתחט״פ · 630 עד ${num(PROJ.tx.max630,100)}% · 1000: ${PROJ.tx.allow1000==='no'?'לא בשימוש':'עד '+num(PROJ.tx.max1000,100)+'%'}`;
+function projectSection(){
+  const PS=projectSummary();
+  return [
+    {title:'פרטי פרויקט והגדרות', kv:[['שם פרויקט',PROJ.project||'–'],['מספר בניינים',PROJ.list.length],['סוג שנאי','יבש בתחט״פ'],['העמסה מותרת שנאי 630',num(PROJ.tx.max630,100)+'% = '+fmt(630*num(PROJ.tx.max630,100)/100)+' kVA'],['שנאי 1000',PROJ.tx.allow1000==='no'?'לא בשימוש – רק 630':'בשימוש – העמסה מותרת '+num(PROJ.tx.max1000,100)+'% = '+fmt(1000*num(PROJ.tx.max1000,100)/100)+' kVA'],['מרתף חניה משויך ל',PROJ.park.bld<0?'אין מרתף חניה':bldName(PROJ.list[PROJ.park.bld]||{},PROJ.park.bld)]]},
+    {title:'סיכום פרויקט – שנאים וחדרי שנאים', kpi:[['סה״כ שנאים',PS.tot],['שנאי 630',PS.c630],['שנאי 1000',PS.c1000],['חדרי שנאים',PS.rooms+(PS.rooms?' ('+PS.per.join('+')+')':'')]],
+      head:['בניין','יח״ד','חניון','עומס [kVA]','שנאים [kVA]'], rows:PS.rows.map(r=>[r.name,r.units,r.park?'✔':'–',fmt(r.P,0),txLabel(r.tx)]), note:'חדר שנאים מכיל 1 עד 3 שנאים – מעבר לכך נפתח חדר נוסף.'}
+  ];
+}
+function buildingSections(bi){
+  const R=LAST, rows=txRows(R), tn=R.floors.reduce((s,f)=>s+f.n,0), tp=R.floors.reduce((s,f)=>s+f.p,0);
+  const nm=bldName(S,bi);
+  const groups=[]; S.groups.forEach((g,gi)=>g.types.forEach(t=>{ if(!t.count&&!t.rooms) return; const dm=demand(t.rooms,t.conn); groups.push([gi+1,`${g.from}–${g.to}`,num(t.count),t.rooms?ROOM_LBL[t.rooms]:'–',t.area===''?'–':num(t.area),t.conn?CONN_LBL(t.conn):'–',dm.subst?fmt(dm.p)+' ✱':fmt(dm.p)]); }));
+  const conns=[]; S.pubs.forEach(r=>r.conn&&conns.push(['ציבורי בניין',CONN_LBL(r.conn),num(r.count)])); S.coms.forEach(r=>r.conn&&conns.push(['מסחר / משרדים',CONN_LBL(r.conn),num(r.count)]));
+  if(PROJ.park.bld===bi) PROJ.park.rows.forEach(r=>r.conn&&conns.push([r.name||'חניון',CONN_LBL(r.conn),num(r.count)]));
+  return [
+    {title:`${nm} – נתונים`, kv:[['בניין',nm],['קומות מעל קרקע',R.N],['סה״כ יח״ד',tn],['Σ שיא ביקוש דירתי [kVA]',fmt(tp)],['אזור בקעת הירדן והערבה',S.jordan==='yes'?'כן':'לא'],['עומס כולל לבניין [kVA]',fmt(R.total.P)]]},
+    {title:`${nm} – שנאים`, kpi:[['שנאים לבניין',txLabel(R.tx.map(t=>t.size))],['עומס כולל [kVA]',fmt(R.total.P,0)]],
+      head:['שנאי','גודל [kVA]','מזין','חישוב','עומס [kVA]','זרם [A]','העמסה מותרת [kVA]','ניצול'], rows:rows.map(t=>[t.no,t.size,t.feeds.join(' · '),t.mode,fmt(t.P),fmt(t.I,0),fmt(t.cap,0),Math.round(t.util*100)+'%']), wide:2},
+    {title:`${nm} – פירוט חישוב לפי מחשבון חח״י`, head:DET_HEAD, rows:detailRows(R), small:true},
+    {title:`${nm} – חיבורים ציבוריים, מסחר וחניון`, head:['חיבור','גודל','כמות'], rows:conns.length?conns:[['אין','–','–']]},
+    {title:`${nm} – מקבצי קומות ודירות`, head:['מקבץ','קומות','דירות בקומה','חדרים','שטח [מ״ר]','גודל חיבור','שיא ביקוש לדירה [kVA]'], rows:groups, note:substItems().join('\n')}
+  ];
+}
+const METHOD=[
+  ['ביתי: ','הספק = מקדם התלכדות (לפי מספר הדירות) × Σ שיא ביקוש דירתי ÷ 0.95, כפול מקדם גידול 1.01⁵ = 1.051.'],
+  ['ציבורי / חניון: ','אם סך זרם החיבורים הציבוריים והחניון גדול מ־30% מהזרם הסופי – מוסיפים 50% מההספק שלהם.'],
+  ['לא ביתי: ','Σ (כמות × מקדם ניצול × זרם החיבור) × מקדם התלכדות לא ביתי.'],
+  ['שנאי ללא דירות: ','ברירת מחדל צרכנות ביתית – 50% מהספק החיבורים הציבוריים (כלל הציבורי של המחשבון); ניתן לבחור צרכנות לא ביתית.'],
+  ['מעורב: ','שיא חורף = ביתי + 0.5 × לא ביתי; שיא קיץ = 0.7 × ביתי + לא ביתי; נבחר הגבוה.'],
+  ['בחירת שנאי: ','חח״י עובדת עם 630 ו־1000 קו״א. עד העמסת 630 – שנאי 630; עד העמסת 1000 (לפי האחוז שנבחר) – שנאי 1000; מעבר לכך – שנאי 630 נוספים. כל שנאי מחושב בנפרד.'],
+  ['סדר מילוי: ','דירות מלמטה למעלה בקומות שלמות, אחר כך ציבורי בניין, מסחר ומרתף החניה.'],
+  ['מקור: ','מחשבון העומסים של חח״י, נוהל הרשת הארצית 733-006-004-010.']
+];
+
+/* ---------- collect all sections ---------- */
+async function allSections(){
+  const out=[...projectSection()];
+  await forEachBuilding(async(b,i)=>{ out.push(...buildingSections(i)); });
+  out.push({title:'שיטת החישוב', method:METHOD});
+  return out;
+}
+
+/* ---------- HTML blocks (PDF) ---------- */
+function rTable(head, rows, opt={}){
+  const fs = opt.fs||'9.5pt';
+  const th = head.map(h=>`<th style="background:${RC.dark};color:#fff;border:1px solid ${RC.dark};padding:5px 4px;font-size:${fs};font-weight:bold;text-align:center">${esc(h)}</th>`).join('');
+  const tr = rows.map((r,i)=>`<tr>${r.map((c,j)=>`<td style="border:1px solid ${RC.line};padding:4px;font-size:${fs};text-align:${opt.wide===j?'right':'center'};background:${i%2?'#fafbfc':'#ffffff'}">${c===''||c==null?'–':esc(c)}</td>`).join('')}</tr>`).join('');
+  return `<table dir="rtl" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;direction:rtl">${th?`<tr>${th}</tr>`:''}${tr}</table>`;
+}
+function rTitle(n, t){ return `<table dir="rtl" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;margin:14px 0 6px"><tr><td style="border-bottom:2px solid ${RC.red};padding:0 0 4px;font-size:13pt;font-weight:bold;color:${RC.dark};text-align:right"><span style="color:${RC.red}">${n}.</span> ${esc(t)}</td></tr></table>`; }
+function rHeader(){
+  return `<table dir="rtl" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;border-bottom:3px solid ${RC.red}">
+   <tr><td style="width:150px;padding:0 0 8px;vertical-align:middle;text-align:right"><img src="${LOGO()}" width="140" height="60" style="width:140px;height:60px"></td>
+    <td style="padding:0 12px 8px;vertical-align:middle;text-align:right"><div style="font-size:16pt;font-weight:bold;color:${RC.dark}">קביעת כמות שנאים חברת חשמל</div>
+      <div style="font-size:10pt;color:${RC.muted}">לפי מחשבון העומסים של חח״י · ${esc(settingsTxt())}</div></td>
+    <td style="width:170px;padding:0 0 8px;vertical-align:middle;text-align:left;font-size:9pt;color:${RC.muted};line-height:1.6">פרויקט: <b style="color:${RC.dark}">${esc(PROJ.project)||'–'}</b><br>תאריך: ${todayStr()}<br>${VERSION}</td></tr></table>`;
+}
+function rFooter(i,n){
+  return `<table dir="rtl" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%;border-top:1px solid ${RC.line}"><tr>
+    <td style="padding-top:5px;font-size:8pt;color:${RC.muted};text-align:right">טיקטין תכנון חשמל בע״מ · הופק ${todayStr()} · קביעת כמות שנאים ${VERSION}</td>
+    <td style="padding-top:5px;font-size:8pt;color:${RC.muted};text-align:left">עמוד ${i} מתוך ${n}</td></tr></table>`;
+}
+function secBlocks(secs){
+  const blocks=[]; let n=0;
+  secs.forEach(s=>{
+    let h=rTitle(++n,s.title);
+    if(s.kv) h+=`<table dir="rtl" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%">${s.kv.map(([k,v])=>`<tr><td style="border:1px solid ${RC.line};padding:5px 8px;font-size:9.5pt;text-align:right;background:${RC.head};color:${RC.muted};width:40%">${esc(k)}</td><td style="border:1px solid ${RC.line};padding:5px 8px;font-size:9.5pt;text-align:right;font-weight:bold">${esc(v)}</td></tr>`).join('')}</table>`;
+    if(s.kpi) h+=`<table dir="rtl" width="100%" cellspacing="6" cellpadding="0" style="width:100%;border-collapse:separate"><tr>${s.kpi.map(([k,v],i)=>`<td style="border:2px solid ${i?RC.line:RC.red};padding:8px 6px;text-align:center"><div style="font-size:9.5pt;color:${RC.muted}">${esc(k)}</div><div style="font-size:18pt;font-weight:bold;color:${i?RC.dark:RC.red}">${esc(v)}</div></td>`).join('')}</tr></table>`;
+    if(s.method) h+=`<table dir="rtl" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;width:100%"><tr><td style="background:${RC.head};border:1px solid ${RC.line};padding:9px 12px;font-size:9pt;line-height:1.75;text-align:right">${s.method.map(([b,t])=>`<b>${b}</b>${esc(t)}`).join('<br>')}</td></tr></table>`;
+    if(s.head){
+      const chunk=28;
+      for(let i=0;i<Math.max(1,s.rows.length);i+=chunk){ blocks.push((i?'':h)+rTable(s.head,s.rows.slice(i,i+chunk),{fs:s.small?'8pt':'9pt',wide:s.wide})); h=''; }
+      if(s.note) blocks.push(`<div style="background:#fff8e6;border:1px solid #f0d48a;padding:6px 10px;font-size:8.5pt;line-height:1.6;text-align:right;margin-top:6px">${esc(s.note).replace(/\n/g,'<br>')}</div>`);
+    } else blocks.push(h);
+  });
+  return blocks;
+}
+
+/* ---------- PDF ---------- */
+document.getElementById('bPdf').addEventListener('click',async()=>{
+  if(!window.html2canvas||!window.jspdf){ alert('ספריית PDF לא נטענה – בדוק חיבור לאינטרנט'); return; }
+  const btn=document.getElementById('bPdf'); btn.disabled=true; const old=btn.textContent; btn.textContent='מכין PDF…';
+  const host=document.createElement('div'); host.className='rp'; host.style.cssText='position:fixed;left:-10000px;top:0;width:794px;z-index:-1';
+  document.body.appendChild(host);
+  try{
+    const blocks=secBlocks(await allSections()), H=930, pages=[];
+    const newPage=()=>{ const pg=document.createElement('div');
+      pg.style.cssText='width:794px;height:1123px;box-sizing:border-box;padding:34px 42px 0;background:#fff;direction:rtl;font-family:Arial,"Segoe UI",sans-serif;color:#1f2328;position:relative;overflow:hidden';
+      pg.innerHTML=rHeader()+`<div class="rc"></div><div class="rf" style="position:absolute;left:42px;right:42px;bottom:24px"></div>`;
+      host.appendChild(pg); pages.push(pg); return pg.querySelector('.rc'); };
+    let rc=newPage();
+    for(const b of blocks){ const el=document.createElement('div'); el.innerHTML=b; rc.appendChild(el);
+      if(rc.offsetHeight>H && rc.children.length>1){ rc.removeChild(el); rc=newPage(); rc.appendChild(el); } }
+    pages.forEach((pg,i)=>pg.querySelector('.rf').innerHTML=rFooter(i+1,pages.length));
+    const {jsPDF}=window.jspdf; const pdf=new jsPDF('p','mm','a4');
+    for(let i=0;i<pages.length;i++){ const c=await html2canvas(pages[i],{scale:2,backgroundColor:'#ffffff'}); if(i) pdf.addPage(); pdf.addImage(c.toDataURL('image/jpeg',0.93),'JPEG',0,0,210,297); }
+    pdf.save(fname('pdf'));
+  } finally { host.remove(); btn.disabled=false; btn.textContent=old; }
+});
+
+/* ---------- Word ---------- */
+document.getElementById('bDoc').addEventListener('click',async()=>{
+  if(!window.docx){ alert('ספריית Word לא נטענה – בדוק חיבור לאינטרנט'); return; }
+  const btn=document.getElementById('bDoc'); btn.disabled=true; const old=btn.textContent; btn.textContent='מכין Word…';
+  try{
+    const {Document,Packer,Paragraph,TextRun,Table,TableRow,TableCell,WidthType,AlignmentType,BorderStyle,ShadingType,ImageRun,Header,Footer,PageNumber,VerticalAlign}=window.docx;
+    const hex=c=>c.replace('#','').toUpperCase(), LANG={value:'he-IL',bidirectional:'he-IL'};
+    const run=(t,o={})=>new TextRun({text:String(t??''),font:'Arial',size:o.size||19,bold:!!o.bold,color:o.color?hex(o.color):undefined,rightToLeft:true,language:LANG});
+    const P=(parts,o={})=>new Paragraph({bidirectional:true,alignment:o.align||AlignmentType.START,spacing:{before:o.before||0,after:o.after??60},keepNext:!!o.keepNext,children:(Array.isArray(parts)?parts:[parts]).map(x=>typeof x==='string'?run(x,o):x)});
+    const bin=src=>{ const b=atob(src.split(',')[1]); const u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; };
+    const bLine={style:BorderStyle.SINGLE,size:4,color:'CFD4DA'}, bNone={style:BorderStyle.NONE,size:0,color:'FFFFFF'};
+    const allB={top:bLine,bottom:bLine,left:bLine,right:bLine}, noB={top:bNone,bottom:bNone,left:bNone,right:bNone};
+    const cell=(content,o={})=>new TableCell({children:Array.isArray(content)?content:[content],shading:o.fill?{type:ShadingType.CLEAR,color:'auto',fill:hex(o.fill)}:undefined,borders:o.borders||allB,verticalAlign:VerticalAlign.CENTER,margins:{top:50,bottom:50,left:80,right:80},width:o.width?{size:o.width,type:WidthType.PERCENTAGE}:undefined});
+    const table=rows=>new Table({visuallyRightToLeft:true,width:{size:100,type:WidthType.PERCENTAGE},rows});
+    const secs=await allSections(), children=[]; let n=0;
+    secs.forEach(s=>{
+      children.push(P([run((++n)+'. ',{bold:true,size:26,color:RC.red}),run(s.title,{bold:true,size:26,color:RC.dark})],{before:240,after:100,keepNext:true}));
+      if(s.kv) children.push(table(s.kv.map(([k,v])=>new TableRow({children:[cell(P(String(k),{after:0,color:RC.muted}),{fill:RC.head,width:40}),cell(P(String(v),{after:0,bold:true}),{width:60})]}))));
+      if(s.kpi) children.push(table([new TableRow({children:s.kpi.map(([k,v],i)=>cell([P(String(k),{align:AlignmentType.CENTER,color:RC.muted,after:0}),P(String(v),{align:AlignmentType.CENTER,bold:true,size:34,color:i?RC.dark:RC.red,after:0})]))})]));
+      if(s.method) children.push(table([new TableRow({children:[cell(s.method.map(([b,t])=>P([run(b,{bold:true,size:18}),run(t,{size:18})],{after:40})),{fill:RC.head})]})]));
+      if(s.head){ const sz=s.small?15:18;
+        children.push(P('',{after:40}));
+        children.push(table([new TableRow({tableHeader:true,cantSplit:true,children:s.head.map(h=>cell(P(h,{bold:true,color:'#ffffff',align:AlignmentType.CENTER,after:0,size:sz}),{fill:RC.dark}))}),
+          ...s.rows.map((r,i)=>new TableRow({cantSplit:true,children:r.map((c,j)=>cell(P(String(c??'–'),{align:s.wide===j?AlignmentType.START:AlignmentType.CENTER,after:0,size:sz}),{fill:i%2?'#fafbfc':null}))}))]));
+        if(s.note) s.note.split('\n').forEach(t=>children.push(P(t,{size:16,color:RC.muted,before:40})));
+      }
+    });
+    const header=new Header({children:[table([new TableRow({children:[
+       cell(P([new ImageRun({data:bin(LOGO()),transformation:{width:120,height:52}})],{after:0}),{borders:noB,width:20}),
+       cell([P('קביעת כמות שנאים חברת חשמל',{bold:true,size:26,after:0}),P('לפי מחשבון העומסים של חח״י · '+settingsTxt(),{size:16,color:RC.muted,after:0})],{borders:noB,width:58}),
+       cell([P(`פרויקט: ${PROJ.project||'–'}`,{size:16,color:RC.muted,after:0,align:AlignmentType.END}),P(`תאריך: ${todayStr()}`,{size:16,color:RC.muted,after:0,align:AlignmentType.END})],{borders:noB,width:22})
+     ]})]), new Paragraph({border:{bottom:{style:BorderStyle.SINGLE,size:18,color:'C8202F',space:1}},children:[]})]});
+    const footer=new Footer({children:[new Paragraph({bidirectional:true,children:[run(`טיקטין תכנון חשמל בע״מ · הופק ${todayStr()} · קביעת כמות שנאים ${VERSION} · עמוד `,{size:16,color:RC.muted}),new TextRun({children:[PageNumber.CURRENT],font:'Arial',size:16}),run(' מתוך ',{size:16,color:RC.muted}),new TextRun({children:[PageNumber.TOTAL_PAGES],font:'Arial',size:16})]})]});
+    const doc=new Document({creator:'Tiktin',title:'קביעת כמות שנאים חברת חשמל',styles:{default:{document:{run:{font:'Arial',size:19,rightToLeft:true,language:LANG},paragraph:{bidirectional:true}}}},
+      sections:[{properties:{page:{size:{width:11906,height:16838},margin:{top:1500,bottom:1000,left:850,right:850,header:400,footer:400}}},headers:{default:header},footers:{default:footer},children}]});
+    download(await Packer.toBlob(doc), fname('docx'));
+  } finally { btn.disabled=false; btn.textContent=old; }
+});
+
+/* ---------- Excel ---------- */
+document.getElementById('bXlsx').addEventListener('click',async()=>{
+  if(!window.ExcelJS){ alert('ספריית האקסל לא נטענה – בדוק חיבור לאינטרנט'); return; }
+  const wb=new ExcelJS.Workbook(); wb.creator='Tiktin';
+  const thin={style:'thin',color:{argb:'FFCFD4DA'}}, border={top:thin,left:thin,bottom:thin,right:thin};
+  const fillOf=c=>({type:'pattern',pattern:'solid',fgColor:{argb:c}});
+  const logoId=wb.addImage({base64:LOGO(),extension:'png'});
+  const NC=12;
+  function sheet(name){
+    const ws=wb.addWorksheet(name.replace(/[\\\/?*\[\]:]/g,'').slice(0,31),{views:[{rightToLeft:true,showGridLines:false}],pageSetup:{paperSize:9,orientation:'landscape',fitToPage:true,fitToWidth:1,fitToHeight:0}});
+    ws.columns=Array.from({length:NC},(_,i)=>({width:i===2?34:14}));
+    ws.headerFooter.oddFooter='&Rטיקטין תכנון חשמל בע״מ&Lעמוד &P מתוך &N';
+    ws.addImage(logoId,{tl:{col:0.1,row:0.15},ext:{width:150,height:65}});
+    for(let r=1;r<=4;r++) ws.getRow(r).height=17;
+    ws.mergeCells(1,3,2,NC); const t=ws.getCell(1,3); t.value='קביעת כמות שנאים חברת חשמל'; t.font={name:'Arial',size:16,bold:true}; t.alignment={horizontal:'right',vertical:'middle',readingOrder:'rtl'};
+    ws.mergeCells(3,3,3,NC); const s=ws.getCell(3,3); s.value='לפי מחשבון העומסים של חח״י · '+settingsTxt(); s.font={name:'Arial',size:10,color:{argb:'FF5F6670'}}; s.alignment={horizontal:'right',readingOrder:'rtl'};
+    ws.mergeCells(4,3,4,NC); const p=ws.getCell(4,3); p.value=`פרויקט: ${PROJ.project||'–'}   ·   תאריך: ${todayStr()}   ·   ${VERSION}`; p.font={name:'Arial',size:9,color:{argb:'FF5F6670'}}; p.alignment={horizontal:'right',readingOrder:'rtl'};
+    for(let c=1;c<=NC;c++) ws.getCell(5,c).border={bottom:{style:'medium',color:{argb:'FFC8202F'}}};
+    ws._next=7; return ws;
+  }
+  let n=0;
+  function put(ws,s){
+    let r=ws._next; ws.mergeCells(r,1,r,NC); const c=ws.getCell(r,1); c.value=`${++n}. ${s.title}`; c.font={name:'Arial',size:12,bold:true}; c.alignment={horizontal:'right',readingOrder:'rtl'}; r+=2;
+    const rows = s.kv ? s.kv : s.kpi && !s.head ? s.kpi : null;
+    if(s.kpi && s.head){ s.kpi.forEach(([k,v])=>{ ws.getCell(r,1).value=k; ws.getCell(r,2).value=v; ws.getCell(r,2).font={name:'Arial',bold:true,color:{argb:'FFC8202F'}}; r++; }); r++; }
+    if(rows) rows.forEach(([k,v])=>{ const a=ws.getCell(r,1), b=ws.getCell(r,3); ws.mergeCells(r,1,r,2); a.value=k; a.fill=fillOf('FFF3F4F6'); a.border=border; a.alignment={horizontal:'right',readingOrder:'rtl'}; b.value=v; b.font={name:'Arial',bold:true}; b.border=border; b.alignment={horizontal:'right',readingOrder:'rtl'}; r++; });
+    if(s.method) s.method.forEach(([b,t])=>{ ws.mergeCells(r,1,r,NC); const x=ws.getCell(r,1); x.value=b+t; x.alignment={horizontal:'right',wrapText:true,readingOrder:'rtl'}; ws.getRow(r).height=30; r++; });
+    if(s.head){
+      s.head.forEach((h,i)=>{ const x=ws.getCell(r,i+1); x.value=h; x.font={name:'Arial',size:10,bold:true,color:{argb:'FFFFFFFF'}}; x.fill=fillOf('FF1F2328'); x.alignment={horizontal:'center',vertical:'middle',wrapText:true,readingOrder:'rtl'}; x.border=border; });
+      ws.getRow(r).height=42; r++;
+      s.rows.forEach((row,ri)=>{ row.forEach((v,i)=>{ const x=ws.getCell(r,i+1); const nv=typeof v==='string'&&/^-?[\d,.]+$/.test(v)?parseFloat(v.replace(/,/g,'')):v; x.value=nv; x.font={name:'Arial',size:10}; x.alignment={horizontal:s.wide===i?'right':'center',vertical:'middle',wrapText:true,readingOrder:'rtl'}; x.border=border; x.fill=fillOf(ri%2?'FFFAFBFC':'FFFFFFFF'); }); r++; });
+      if(s.note) s.note.split('\n').filter(Boolean).forEach(t=>{ ws.mergeCells(r,1,r,NC); const x=ws.getCell(r,1); x.value=t; x.font={name:'Arial',size:9}; x.fill=fillOf('FFFFF8E6'); x.alignment={horizontal:'right',wrapText:true,readingOrder:'rtl'}; ws.getRow(r).height=28; r++; });
+    }
+    ws._next=r+1;
+  }
+  const ps=projectSection(); const w0=sheet('סיכום פרויקט'); ps.forEach(s=>put(w0,s)); put(w0,{title:'שיטת החישוב',method:METHOD});
+  await forEachBuilding(async(b,i)=>{ const w=sheet(bldName(b,i)); buildingSections(i).forEach(s=>put(w,s)); });
+  const buf=await wb.xlsx.writeBuffer();
+  download(new Blob([buf],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'}), fname('xlsx'));
+});
+
+const LIBS = {
+  xlsx:  ['https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js', ()=>window.XLSX],
+  mammoth:['https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js', ()=>window.mammoth],
+  pdf:   ['https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js', ()=>window.pdfjsLib],
+  jszip: ['https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js', ()=>window.JSZip]
+};
+const PDF_WORKER='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+function loadLib(k){
+  const [url,get]=LIBS[k]; if(get()) return Promise.resolve(get());
+  return new Promise((res,rej)=>{ const s=document.createElement('script'); s.src=url; s.onload=()=>get()?res(get()):rej(new Error('lib')); s.onerror=()=>rej(new Error('lib')); document.head.appendChild(s); });
+}
+const HEB=/[֐-׿]/;
+const clean=v=>String(v??'').replace(/[‎‏‪-‮]/g,'').replace(/\s+/g,' ').trim();
+
+/* ---- file → list of grids {name, rows:[[cell,...]], context:[text before]} ---- */
+async function fileToGrids(file){
+  const ext=(file.name.split('.').pop()||'').toLowerCase();
+  const buf=await file.arrayBuffer();
+  if(['xlsx','xlsm','xls','csv'].includes(ext)){
+    const X=await loadLib('xlsx'); const wb=X.read(buf,{type:'array'});
+    return wb.SheetNames.map(n=>{ const ws=wb.Sheets[n];
+      // fill merged cells with their value (vertical merges of floors / buildings)
+      (ws['!merges']||[]).forEach(m=>{ const v=ws[X.utils.encode_cell(m.s)]; if(!v) return; for(let r=m.s.r;r<=m.e.r;r++) for(let c=m.s.c;c<=m.e.c;c++){ const a=X.utils.encode_cell({r,c}); if(!ws[a]) ws[a]={t:v.t,v:v.v,w:v.w}; } });
+      const rows=X.utils.sheet_to_json(ws,{header:1,raw:false,defval:''}).map(r=>r.map(clean));
+      return {name:n, rows};
+    });
+  }
+  if(ext==='docx'){
+    const M=await loadLib('mammoth'); const r=await M.convertToHtml({arrayBuffer:buf});
+    return htmlToGrids(r.value, file.name);
+  }
+  if(ext==='pptx'){
+    const Z=await loadLib('jszip'); const zip=await Z.loadAsync(buf);
+    const slides=Object.keys(zip.files).filter(f=>/^ppt\/slides\/slide\d+\.xml$/.test(f)).sort((a,b)=>+a.match(/\d+/)[0]-+b.match(/\d+/)[0]);
+    const grids=[];
+    for(const f of slides){
+      const xml=new DOMParser().parseFromString(await zip.file(f).async('string'),'application/xml');
+      const txt=n=>Array.from(n.getElementsByTagName('a:p')).map(p=>Array.from(p.getElementsByTagName('a:t')).map(t=>t.textContent).join('')).join(' ');
+      const ctx=[]; Array.from(xml.getElementsByTagName('p:sp')).forEach(sp=>{ const t=clean(txt(sp)); if(t) ctx.push(t); });
+      Array.from(xml.getElementsByTagName('a:tbl')).forEach((tb,ti)=>{
+        const rows=Array.from(tb.getElementsByTagName('a:tr')).map(tr=>{ const out=[]; Array.from(tr.getElementsByTagName('a:tc')).forEach(tc=>{ out.push(clean(txt(tc))); const span=+tc.getAttribute('gridSpan')||1; for(let i=1;i<span;i++) out.push(''); }); return out; });
+        grids.push({name:`שקף ${f.match(/\d+/)[0]}`, rows, context:ctx});
+      });
+      if(!xml.getElementsByTagName('a:tbl').length && ctx.length) grids.push({name:`שקף ${f.match(/\d+/)[0]}`, rows:ctx.map(t=>[t]), context:[]});
+    }
+    return grids;
+  }
+  if(ext==='pdf'){
+    const P=await loadLib('pdf'); P.GlobalWorkerOptions.workerSrc=PDF_WORKER;
+    const doc=await P.getDocument({data:buf}).promise; const grids=[];
+    for(let i=1;i<=doc.numPages;i++){
+      const page=await doc.getPage(i); const tc=await page.getTextContent();
+      grids.push({name:`עמוד ${i}`, rows:pdfItemsToRows(tc.items), pdf:true});
+    }
+    return grids;
+  }
+  if(['html','htm'].includes(ext)) return htmlToGrids(new TextDecoder().decode(buf), file.name);
+  throw new Error('type');
+}
+function htmlToGrids(html,name){
+  const dom=new DOMParser().parseFromString(html,'text/html'); const grids=[]; let ctx=[];
+  dom.body.querySelectorAll(':scope > *').forEach(el=>{
+    if(el.tagName==='TABLE'){
+      const rows=Array.from(el.querySelectorAll('tr')).map(tr=>{ const out=[]; tr.querySelectorAll('td,th').forEach(td=>{ out.push(clean(td.textContent)); const span=+td.getAttribute('colspan')||1; for(let i=1;i<span;i++) out.push(''); }); return out; });
+      grids.push({name, rows, context:ctx.slice(-3)}); ctx=[];
+    } else { const t=clean(el.textContent); if(t) ctx.push(t); }
+  });
+  if(!grids.length && ctx.length) grids.push({name, rows:ctx.map(t=>[t]), context:[]});
+  return grids;
+}
+/* PDF: group text items into rows (by y) and cells (by x gaps), right-to-left */
+function pdfItemsToRows(items){
+  const its=items.filter(t=>clean(t.str)).map(t=>({s:clean(t.str), x:t.transform[4], y:t.transform[5], w:t.width||0}));
+  // fix reversed Hebrew (visual order) when needed
+  const words=['בניין','בנין','קומה','קומות','חדרים','שטח','דירות','כמות','סה"כ','מבנה','טיפוס'];
+  let fw=0, rv=0; its.forEach(t=>{ words.forEach(w=>{ if(t.s.includes(w)) fw++; if(t.s.includes([...w].reverse().join(''))) rv++; }); });
+  if(rv>fw) its.forEach(t=>{ if(HEB.test(t.s)) t.s=[...t.s].reverse().join('').replace(/[()]/g,c=>c==='('?')':'('); });
+  its.sort((a,b)=>b.y-a.y||b.x-a.x);
+  const rows=[]; let cur=null;
+  its.forEach(t=>{ if(!cur||Math.abs(cur.y-t.y)>3){ cur={y:t.y,items:[]}; rows.push(cur); } cur.items.push(t); });
+  return rows.map(r=>{
+    r.items.sort((a,b)=>b.x-a.x); const cells=[]; let last=null;
+    r.items.forEach(t=>{ if(last && (last.x-(t.x+t.w))<4){ last.s=t.s+' '+last.s; last.x=t.x; } else { last={...t}; cells.push(last); } });
+    const out=cells.map(c=>c.s); out._x=cells.map(c=>c.x+c.w/2); return out;
+  });
+}
+
+/* ---- grids → records {bld, f1, f2, rooms, area, count} ---- */
+const KW={
+  bld:/(בניין|בנין|מבנה|בלוק|bldg|building)/i,
+  floor:/(קומה|קומות|מפלס|floor)/i,
+  rooms:/(חדרים|חד['׳]|^חד$|rooms)/i,
+  area:/(שטח|מ["״]ר|מטר|area)/i,
+  count:/(כמות|מס['׳]? ?דירות|יח["״]ד|יחד|מספר דירות|qty)/i,
+  apt:/(מס['׳]? ?דירה|דירה מס|מספר דירה|^דירה$)/i,
+  type:/(טיפוס|דגם|סוג|type)/i,
+  total:/(סה["״]כ|סך הכל|total)/i
+};
+const BLD_RE=/(?:בניין|בנין|מבנה|בלוק)\s*(?:מס['׳]?\s*)?['"״׳]?\s*([A-Za-zא-ת]\d*|\d+[A-Za-zא-ת]?)/;
+function parseFloors(v){
+  const s=clean(v); if(!s) return null;
+  if(/קרקע|כניסה|לובי/.test(s)&&!/\d/.test(s)) return [0,0];
+  if(/מרתף|חניון|גג(?!.*\d)/.test(s)&&!/\d/.test(s)) return null;
+  const m=s.match(/(-?\d+)\s*(?:-|–|—|עד|to)\s*(-?\d+)/); if(m){ const a=+m[1], b=+m[2]; return [Math.min(a,b),Math.max(a,b)]; }
+  const n=s.match(/-?\d+/); if(n) return [+n[0],+n[0]];
+  return null;
+}
+function parseRooms(v){
+  const s=clean(v); if(!s) return null;
+  if(/מיני\s*פנט/.test(s)) return 5; if(/פנט|penthouse/i.test(s)&&!/\d/.test(s)) return 6;
+  const m=s.match(/(\d+(?:[.,]5)?)/); if(m){ const r=parseFloat(m[1].replace(',','.')); if(r>=1&&r<=12) return Math.floor(r); }
+  return null;
+}
+const numOf=v=>{ const m=clean(v).replace(/,/g,'').match(/-?\d+(?:\.\d+)?/); return m?parseFloat(m[0]):NaN; };
+function roomsKey(r){ return r<=3?'2-3':(r>=7?'7':String(r)); }
+
+function gridsToRecords(grids){
+  const recs=[]; let lastBld='';
+  for(const g of grids){
+    const ctxB=((g.context||[]).join(' ').match(BLD_RE)||(g.name||'').match(BLD_RE)||[])[1];
+    if(ctxB) lastBld=ctxB;
+    let curBld=lastBld;
+    const rows=g.rows; let hi=-1, map=null;
+    for(let i=0;i<rows.length;i++){
+      const r=rows[i]; const nonEmpty=r.filter(c=>c);
+      // a title row "בניין X" switches building
+      if(nonEmpty.length<=2 && nonEmpty.some(c=>BLD_RE.test(c)) && !nonEmpty.some(c=>KW.floor.test(c))){ curBld=nonEmpty.join(' ').match(BLD_RE)[1]; lastBld=curBld; map=null; continue; }
+      const m={}; r.forEach((c,j)=>{ if(!c) return;
+        const nd=!/\d/.test(c);
+        if(m.bld==null&&KW.bld.test(c)&&nd&&c.length<16) m.bld=j;
+        else if(m.floor==null&&KW.floor.test(c)&&nd) m.floor=j;
+        else if(m.rooms==null&&KW.rooms.test(c)&&nd) m.rooms=j;
+        else if(m.area==null&&KW.area.test(c)) m.area=j;
+        else if(m.count==null&&KW.count.test(c)) m.count=j;
+        else if(m.apt==null&&KW.apt.test(c)) m.apt=j;
+        else if(m.type==null&&KW.type.test(c)) m.type=j; });
+      const typeCols=[]; if(m.floor!=null) r.forEach((c,j)=>{ if(!c||Object.values(m).includes(j)) return; if(KW.total.test(c)) return; if(!/חד|פנט|דיר|גן|room/i.test(c)) return; const rr=parseRooms(c); if(rr) typeCols.push({j,rooms:rr,area:numOf((c.match(/(\d+(?:\.\d+)?)\s*מ["״]ר/)||[])[1])}); });
+      if(m.floor!=null && (m.rooms!=null || m.type!=null || typeCols.length || Object.keys(m).length>=2)){
+        map={...m, typeCols, x:rows[i]._x, countPer: m.count!=null && /לקומה|בקומה|per floor/i.test(r[m.count]), countTot: m.count!=null && KW.total.test(r[m.count])}; hi=i; continue;
+      }
+      if(!map) continue;
+      // PDF: re-align cells to header columns by x position
+      let row=r;
+      if(r._x && map.x){ row=new Array(rows[hi].length).fill(''); r.forEach((c,k)=>{ let best=0,bd=1e9; map.x.forEach((hx,j)=>{ const d=Math.abs(hx-r._x[k]); if(d<bd){bd=d;best=j;} }); row[best]=row[best]?row[best]+' '+c:c; }); }
+      if(row.filter(c=>c).length===0) continue;
+      if(KW.total.test(row.join(' '))) continue;
+      const bld = map.bld!=null && row[map.bld] ? ((row[map.bld].match(BLD_RE)||[])[1]||row[map.bld]) : curBld;
+      if(map.bld!=null && row[map.bld]) { curBld=bld; }
+      const fl=parseFloors(row[map.floor]); if(!fl) continue;
+      if(map.rooms!=null || map.type!=null){
+        const rooms=parseRooms(map.rooms!=null?row[map.rooms]:'') ?? parseRooms(map.type!=null?row[map.type]:'');
+        if(!rooms) continue;
+        const cnt = map.count!=null ? numOf(row[map.count]) : 1;
+        if(!(cnt>0)) continue;
+        const nF=fl[1]-fl[0]+1;
+        const perFloor = map.count==null ? true : (map.countPer ? true : (map.countTot ? false : !(nF>1 && cnt>=nF && cnt%nF===0)));
+        recs.push({bld:bld||'1', f1:fl[0], f2:fl[1], rooms, area:map.area!=null?numOf(row[map.area]):NaN, count:cnt, perFloor});
+      } else if(map.typeCols.length){
+        map.typeCols.forEach(tc=>{ const cnt=numOf(row[tc.j]); if(cnt>0) recs.push({bld:bld||'1', f1:fl[0], f2:fl[1], rooms:tc.rooms, area:tc.area, count:cnt, perFloor:true}); });
+      }
+    }
+  }
+  return recs;
+}
+/* records → buildings {name, floors, groups} */
+function recordsToBuildings(recs){
+  const byB=new Map();
+  recs.forEach(r=>{ const k=String(r.bld).trim()||'1'; if(!byB.has(k)) byB.set(k,{}); const fm=byB.get(k);
+    const nF=r.f2-r.f1+1;
+    // count over a floor range: if it is a total (not per floor) spread evenly when divisible
+    const per = r.perFloor ? r.count : r.count/nF;
+    for(let f=r.f1;f<=r.f2;f++){ if(f<0) continue; (fm[f]=fm[f]||[]).push({rooms:r.rooms, area:isFinite(r.area)?Math.round(r.area):'', count:per}); } });
+  const out=[];
+  byB.forEach((fm,name)=>{
+    const floors=Object.keys(fm).map(Number).sort((a,b)=>a-b);
+    // merge same types per floor
+    const sig={}; floors.forEach(f=>{ const m=new Map(); fm[f].forEach(t=>{ const conn=defaultConn(roomsKey(t.rooms),t.area); const key=roomsKey(t.rooms)+'|'+t.area+'|'+conn; m.set(key,(m.get(key)||0)+t.count); }); fm[f]=[...m.entries()].map(([k,c])=>{ const [rooms,area,conn]=k.split('|'); return {rooms,area,conn,count:Math.round(c*100)/100}; }).sort((a,b)=>a.rooms.localeCompare(b.rooms)||String(a.area).localeCompare(String(b.area))); sig[f]=JSON.stringify(fm[f]); });
+    const groups=[]; floors.forEach(f=>{ const g=groups[groups.length-1]; if(g && g.to===f-1 && g.sig===sig[f]) g.to=f; else groups.push({from:f,to:f,sig:sig[f],types:fm[f]}); });
+    const units=floors.reduce((s,f)=>s+fm[f].reduce((a,t)=>a+t.count,0),0);
+    out.push({name, floors: floors.length?Math.max(...floors):0, units:Math.round(units), groups:groups.map(g=>({from:g.from,to:g.to,types:g.types.map(t=>({count:t.count,rooms:t.rooms,area:t.area,conn:t.conn,auto:true}))}))});
+  });
+  return out.sort((a,b)=>String(a.name).localeCompare(String(b.name),'he',{numeric:true}));
+}
+
+/* ---- import dialog ---- */
+function importDialog(blds, fileName){
+  const dlg=document.getElementById('impDlg');
+  const body=dlg.querySelector('.dbody');
+  body.innerHTML = `<p style="margin:0 0 10px">בקובץ <b>${esc(fileName)}</b> נמצאו ${blds.length} בניינים. <b>סמן את הבניינים עם מונים בקומות</b> – רק להם ייפתחו לשוניות בטופס ויופקו תוצאות.</p>
+   <table><thead><tr><th>מונים בקומות</th><th>בניין</th><th>קומות</th><th>יח״ד</th><th>מקבצים</th><th>פירוט</th></tr></thead><tbody>
+   ${blds.map((b,i)=>`<tr><td><input type="checkbox" data-i="${i}" checked style="width:20px;height:20px"></td><td><b>${esc(b.name)}</b></td><td>0–${b.floors}</td><td>${b.units}</td><td>${b.groups.length}</td>
+     <td style="text-align:right;font-size:12px">${b.groups.map(g=>`${g.from===g.to?'קומה '+g.from:'קומות '+g.from+'–'+g.to}: ${g.types.map(t=>`${t.count}×${ROOM_LBL[t.rooms]} חד׳${t.area?' '+t.area+' מ״ר':''}`).join(', ')}`).join('<br>')}</td></tr>`).join('')}
+   </tbody></table>
+   <div class="muted" style="margin-top:8px">גודל החיבור נקבע אוטומטית לפי כללי ברירת המחדל, וניתן לשנות אחרי הקליטה. מומלץ לעבור על המקבצים בכל לשונית.</div>`;
+  dlg.style.display='flex';
+  return new Promise(res=>{
+    dlg.querySelector('#impOk').onclick=()=>{ const sel=[...body.querySelectorAll('input[data-i]')].filter(c=>c.checked).map(c=>blds[+c.dataset.i]); dlg.style.display='none'; res(sel); };
+    dlg.querySelector('#impCancel').onclick=()=>{ dlg.style.display='none'; res(null); };
+  });
+}
+document.getElementById('bImpHelp').addEventListener('click',()=>{ const h=document.getElementById('impHelp'); h.hidden=!h.hidden; });
+document.getElementById('bImport').addEventListener('click',()=>document.getElementById('fImport').click());
+document.getElementById('fImport').addEventListener('change',async e=>{
+  const f=e.target.files[0]; e.target.value=''; if(!f) return;
+  const btn=document.getElementById('bImport'); const old=btn.innerHTML; btn.disabled=true; btn.textContent='קורא קובץ…';
+  try{
+    let grids;
+    try{ grids=await fileToGrids(f); }
+    catch(err){ alert(err.message==='type' ? 'סוג קובץ לא נתמך. אפשר לקלוט PDF, Word ‏(docx), Excel ומצגת ‏(pptx). קובץ Word / PowerPoint ישן – יש לשמור אותו מחדש בפורמט החדש.' : 'לא הצלחתי לקרוא את הקובץ (ייתכן שאין חיבור לאינטרנט לטעינת רכיב הקריאה).'); return; }
+    const blds=recordsToBuildings(gridsToRecords(grids));
+    if(!blds.length){ alert('לא נמצאה בקובץ טבלת דירות שאפשר לזהות.\nהטופס מחפש טבלה עם עמודת קומה ועמודת חדרים (או עמודות לפי סוגי דירות), ואם יש – עמודות בניין, שטח וכמות.'); return; }
+    const sel=await importDialog(blds, f.name);
+    if(!sel||!sel.length) return;
+    const proj=PROJ.project||'';
+    PROJ.project=proj;
+    PROJ.list=sel.map(b=>{ const st=emptyState(); st.project=proj; st.building=(/^\d+$|^[A-Za-zא-ת]\d*$/.test(b.name)?'בניין ':'')+b.name; st.floors=b.floors; st.groups=b.groups; return st; });
+    PROJ.active=0; S=PROJ.list[0]; fullRender();
+  } finally { btn.disabled=false; btn.innerHTML=old; }
+});
+
+fullRender();
+</script>
+</body>
+</html>
